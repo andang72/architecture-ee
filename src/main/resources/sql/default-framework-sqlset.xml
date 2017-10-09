@@ -2,7 +2,7 @@
 <sqlset>
     <name>ARCHITECTURE_FRAMEWORK_CORE</name>
     <version>5.0</version>
-    <description>SQL STATEMENT FOR FRAMEWORK CORE</description>
+    <description>SQL STATEMENT FOR FRAMEWORK EE</description>
 	<!-- ============================================== -->
 	<!-- MUSI_LOCALIZED_PROPERTY              			-->
 	<!-- ============================================== -->
