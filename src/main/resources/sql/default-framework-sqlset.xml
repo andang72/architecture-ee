@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlset>
+    <name>ARCHITECTURE_FRAMEWORK_CORE</name>
+    <version>5.0</version>
+    <description>SQL STATEMENT FOR FRAMEWORK CORE</description>
+	<!-- ============================================== -->
+	<!-- MUSI_LOCALIZED_PROPERTY              			-->
+	<!-- ============================================== -->
+	<sql-query name="SELECT_ALL_LOCALIZED_PROPERTY" description="전체 다국어 지원 프로퍼티 값 조회"><![CDATA[
+	SELECT 
+	    PROPERTY_NAME, 
+	    PROPERTY_VALUE, 
+	    LOCALE_CODE 
+	FROM MUSI_LOCALIZED_PROPERTY
+    ]]></sql-query>
+      
+	<sql-query name="INSERT_LOCALIZED_PROPERTY" description="다국어 프로퍼티 값 저장"><![CDATA[
+	INSERT INTO MUSI_LOCALIZED_PROPERTY (
+	    PROPERTY_NAME, 
+	    PROPERTY_VALUE, 
+	    LOCALE_CODE
+	) VALUES (? ,?, ?) 
+    ]]></sql-query>
+    
+	<sql-query name="DELETE_LOCALIZED_PROPERTY" description="다국어 프로퍼티 값 삭제"><![CDATA[
+	DELETE FROM MUSI_LOCALIZED_PROPERTY
+	WHERE PROPERTY_NAME LIKE ? 
+	    AND LOCALE_CODE LIKE ?
+    ]]></sql-query>
+    
+	<sql-query name="UPDATE_LOCALIZED_PROPERTY" description="다국어 프로퍼티 값 업데이트"><![CDATA[
+	UPDATE MUSI_LOCALIZED_PROPERTY
+	SET PROPERTY_VALUE=? 
+	WHERE PROPERTY_NAME=? 
+	    AND LOCALE_CODE=? 
+    ]]></sql-query>
+    
+	<!-- ============================================== -->
+	<!-- MUSI_PROPERTY                                    -->
+	<!-- ============================================== -->
+	<sql-query name="SELECT_ALL_PROPERTY" description="전체 프로퍼티 값 조회"><![CDATA[
+	SELECT 
+	    PROPERTY_NAME, 
+	    PROPERTY_VALUE 
+	FROM MUSI_PROPERTY
+    ]]></sql-query>
+      
+	<sql-query name="INSERT_PROPERTY" description="프로퍼티 값 저장"><![CDATA[
+	INSERT INTO MUSI_PROPERTY (
+	    PROPERTY_NAME, 
+	    PROPERTY_VALUE
+	) VALUES (? ,?) 
+    ]]></sql-query>
+      
+	<sql-query name="DELETE_PROPERTY" description="프로퍼티 값 삭제"><![CDATA[
+	DELETE FROM MUSI_PROPERTY 
+	WHERE PROPERTY_NAME LIKE ?
+    ]]></sql-query>
+      
+	<sql-query name="UPDATE_PROPERTY" description="프로퍼티 값 업데이트"><![CDATA[
+	UPDATE MUSI_PROPERTY 
+	    SET PROPERTY_VALUE=? 
+	WHERE PROPERTY_NAME=?
+    ]]></sql-query>  
+
+	<!-- ============================================== -->
+	<!-- MUSI_SEQUENCER                                   -->
+	<!-- ============================================== -->
+	<sql-query name="SELECT_ALL_SEQUENCER" description="모든 시퀀스 객체 정보 조회"><![CDATA[
+	SELECT 
+	    SEQUENCER_ID, 
+	    NAME, 
+	    VALUE 
+	FROM MUSI_SEQUENCER
+    ]]></sql-query>
+
+	<sql-query name="SELECT_SEQUENCER_BY_NAME" description="이름으로 시퀀스 객체 정보 조회"><![CDATA[
+	SELECT 
+	    SEQUENCER_ID, 
+	    NAME, 
+	    VALUE 
+	FROM MUSI_SEQUENCER
+	WHERE NAME = ?
+    ]]></sql-query>
+    
+	<sql-query name="SELECT_SEQUENCER_BY_ID" description="ID 값으로 시퀀스 객체 정보 조회"><![CDATA[
+	SELECT 
+	    VALUE 	
+	FROM MUSI_SEQUENCER 
+	WHERE SEQUENCER_ID = ?
+    ]]></sql-query>
+    
+	<sql-query name="UPDATE_SEQUENCER" description="ID 값으로 시퀀스 값 업데이트"><![CDATA[
+	UPDATE 
+	    MUSI_SEQUENCER SET VALUE = ? 
+	WHERE SEQUENCER_ID = ? AND VALUE = ?
+    ]]></sql-query>
+
+	<sql-query name="SELECT_SEQUENCER_MAX_ID" description="최대 시퀀스 순번 (ID) 값 조회"><![CDATA[
+	SELECT 
+	    MAX ( SEQUENCER_ID ) + 1 
+	FROM MUSI_SEQUENCER 
+    ]]></sql-query>
+
+	<sql-query name="CREATE_SEQUENCER" description="새로운 시퀀스 객체 생성"><![CDATA[
+	INSERT INTO MUSI_SEQUENCER (
+	    VALUE, 
+	    NAME, 
+	    SEQUENCER_ID 
+	) VALUES (?, ?, ?)
+    ]]></sql-query>
+</sqlset>

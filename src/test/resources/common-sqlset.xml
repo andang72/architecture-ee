@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlset>
+	<name>COMMON</name>
+	<description>공통 쿼리</description>
+
+	<sql-query name="SELECT_TABLE_NAMES" description="테이블 명 조회"><![CDATA[
+		select table_name from tabs
+      ]]></sql-query>
+
+	<sql-query name="SELECT_TABLE_NAMES_BY_LIKE" description="테이블 명 조회">
+		<parameterMapping index="1" name="TABLE_NAME"
+			jdbcType="VARCHAR" />
+		<![CDATA[
+		select table_name from tabs where table_name like ?
+      ]]></sql-query>
+
+	<sql-query name="SELECT_TABLE_NAME" description="테이블 명 조회">
+		<parameterMapping index="1" name="TABLE_NAME"
+			jdbcType="VARCHAR" />
+		<![CDATA[
+		
+			select table_name from tabs where table_name = ?
+	    
+	    ]]>
+	</sql-query>
+
+	<sql-query name="SELECT_TABLE_COUNT" description="테이블 명 조회"><![CDATA[
+		select count(table_name) from tabs
+      ]]></sql-query>
+
+	<sql-query name="SELECT_TABLE_ROWS" description="테이블 명에 해당하는 데이터 조회" ><![CDATA[
+		select * from 
+		]]><dynamic><![CDATA[
+		${TABLE_NAME} 
+		<#if TABLE_NAME = "V2_I18N_LOCALE" >
+		WHERE LOCALE_ID <> 0
+		</#if>		
+		]]></dynamic>
+	</sql-query>
+
+
+	<sql-query name="SELECT_ALL_GLOBAL_PROPERTY">
+		select * from GLOBAL_PROPERTY
+	</sql-query>
+
+	<sql-query name="INSERT_GLOBAL_PROPERTY">
+		INSERT INTO GLOBAL_PROPERTY (PROPERTY_NAME,
+		PROPERTY_VALUE) VALUES (? , ?)
+	</sql-query>
+
+
+
+	<sql-query name="SELECT_COUNT_FROM_TABLE" description="테이블 카우터 수 조회">
+		<dynamic>
+			select count( * ) from tabs
+			where table_name like
+			'%${TABLE_NAME!""}%'
+		</dynamic>
+		<!-- <return index="1" name="EDU_USER_NAME" javaType="" /> <parameterMapping 
+			index="1" name="EDU_USER_NAME" javaType="" encoding="" jdbcType="" primary="true" 
+			/> <parameterMapping index="2" name="EDU_USER_NAME" javaType="" encoding="" 
+			jdbcType="" primary="true" /> -->
+	</sql-query>
+
+
+    <row-mapper name="companyRowMapper" class="architecture.common.user.CompanyTemplate" >		
+		<parameterMapping name="companyId" column="COMPANY_ID" javaType="long" />	
+		<parameterMapping name="displayName" column="DISPLAY_NAME" javaType="string" />	
+		<parameterMapping name="name" column="NAME" javaType="string" />	
+		<parameterMapping name="domainName" column="DOMAIN_NAME" javaType="string" />	
+		<parameterMapping name="description" column="DESCRIPTION" javaType="string" />
+		<parameterMapping name="creationDate" column="CREATION_DATE" javaType="date" />
+		<parameterMapping name="modifiedDate" column="MODIFIED_DATE" javaType="date" />
+    </row-mapper>
+
+	<sql-query name="SELECT_ALL_FROM_TABLE" description="테이블 데이터 조회">       
+        <![CDATA[
+        
+        ]]>
+		<dynamic>
+			select * from ${TABLE_NAME}
+		</dynamic>
+
+		<parameter-mappings>
+			<parameter index="1" name="EDU_USER_NAME"
+				mode="IN" javaType="" encoding="" jdbcType="VARCHAR" primary="true" />
+			<parameter index="2" name="EDU_USER_NAME"
+				mode="OUT" javaType="" encoding="" jdbcType="VARCHAR" primary="true" />
+			<parameter index="3" name="EDU_USER_NAME"
+				javaType="" encoding="" jdbcType="VARCHAR" primary="true" />
+			<parameter index="4" name="EDU_USER_NAME"
+				javaType="" encoding="" jdbcType="VARCHAR" primary="true" />
+		</parameter-mappings>
+		<!-- <resultMappings> <resultMapping index="1" name="EDU_USER_NAME" javaType="" 
+			encoding="" jdbcType="string" primary="true" /> <resultMapping index="2" 
+			name="EDU_USER_NAME" javaType="" encoding="" jdbcType="string" primary="true" 
+			/> <resultMapping index="3" name="EDU_USER_NAME" javaType="" encoding="" 
+			jdbcType="string" primary="true" /> <resultMapping index="4" name="EDU_USER_NAME" 
+			javaType="" encoding="" jdbcType="string" primary="true" /> </resultMappings> -->
+	</sql-query>
+
+	<sql-query name="SELECT_TZ_TUTORMONITOR_BY_YEAR" description="테이블 데이터 조회"><![CDATA[  
+        
+        select CONTENT from TZ_TUTORMONITOR where YEAR = ? 
+        
+    ]]></sql-query>
+
+	<sql-query name="SELECT_SCRIPT" description="테이블 데이터 조회  스크립트"><![CDATA[  
+        
+        select * from TZ_TUTORMONITOR ;        
+        select count(*) from TZ_TUTORMONITOR ;
+        
+    ]]>
+	</sql-query>
+
+
+</sqlset>

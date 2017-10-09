@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<beans:bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<beans:property name="preferFileSystemAccess" value="true" />
+		<beans:property name="templateLoaderPath" value="/WEB-INF/template/ftl/" />
+		<beans:property name="defaultEncoding" value="UTF-8" />
+		<beans:property name="freemarkerVariables">
+			<beans:map>
+				<beans:entry key="xml_escape" value-ref="fmXmlEscape" />
+				<beans:entry key="output_encoding" value="UTF-8" />
+				<beans:entry key="whitespace_stripping" value="true" />
+				<beans:entry key="template_update_delay" value="60" />
+			</beans:map>
+		</beans:property>
+		<beans:property name="freemarkerSettings">
+			<beans:props>
+				<beans:prop key="auto_import">/spring.ftl as spring</beans:prop>
+			</beans:props>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+
+</beans:beans> 
