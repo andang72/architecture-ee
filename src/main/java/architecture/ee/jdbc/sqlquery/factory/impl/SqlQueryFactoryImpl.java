@@ -68,13 +68,19 @@ public class SqlQueryFactoryImpl implements SqlQueryFactory {
 		}
 	}
 	
-
+	
+	public SqlQuery createSqlQuery( ) {
+		SqlQueryImpl impl = new SqlQueryImpl(configuration);
+		return impl;
+	}
+	
+	
 	public SqlQuery createSqlQuery(DataSource dataSource) {
 		SqlQueryImpl impl = new SqlQueryImpl(configuration);
 		impl.setDataSource(dataSource);
 		return impl;
-
 	}
+
 
 	protected void fireStateChangeEvent(Object soruce, State oldState, State newState) {
 		if( eventBus != null)

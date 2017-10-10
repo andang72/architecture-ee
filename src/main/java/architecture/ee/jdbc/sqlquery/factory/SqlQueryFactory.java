@@ -23,6 +23,8 @@ public interface SqlQueryFactory {
 
 	public abstract SqlQuery createSqlQuery(DataSource dataSource);
 	
+	public abstract SqlQuery createSqlQuery();
+	
     public Configuration getConfiguration();
     
 }

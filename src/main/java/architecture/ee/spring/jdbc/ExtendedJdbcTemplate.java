@@ -29,6 +29,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,6 +39,9 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.jdbc.core.SqlProvider;
+import org.springframework.jdbc.support.lob.DefaultLobHandler;
+import org.springframework.jdbc.support.lob.LobHandler;
+import org.springframework.jdbc.support.lob.OracleLobHandler;
 import org.springframework.util.Assert;
 
 import architecture.ee.spring.jdbc.ExtendedJdbcUtils.DB;
@@ -146,12 +151,31 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 	public ExtendedJdbcTemplate(DataSource dataSource) {
 		super(dataSource);
 	}
+
 	
-	// *********************************************
-    // Public Methods for Scrollable
-    // ********************************************
+	public void initialize(){	
+		logger.debug("Initializing ExtendedJdbcTemplate");
+		
+		if(this.lobHandler == null && this.getDataSource() != null){
+			this.lobHandler = new DefaultLobHandler();
+			/**
+			if ( getDBInfo() == DB.ORACLE) {
+				OracleLobHandler oracleLobHandler = new OracleLobHandler();
+				oracleLobHandler.setNativeJdbcExtractor(getNativeJdbcExtractor());
+				this.lobHandler = oracleLobHandler;
+			} else {
+				this.lobHandler = new DefaultLobHandler();
+			}
+			**/
+		}
+				
+	}
 	
 	private DB db = null;
+	
+	private LobHandler lobHandler = null;		
+	
+	private Logger log = LoggerFactory.getLogger(getClass());	
 	
 	public ExtendedJdbcTemplate(DataSource dataSource, boolean lazyInit) {
 		super(dataSource, lazyInit);
@@ -165,19 +189,34 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 			}	
 		}
 		return db == null ? DB.UNKNOWN : db;
-	}	
+	}	 
 	
+	
+	
+	public LobHandler getLobHandler() {
+		return lobHandler;
+	}
+
+
+
+	public void setLobHandler(LobHandler lobHandler) {
+		this.lobHandler = lobHandler;
+	}
+
+	
+	// *********************************************
+    // Public Methods for Scrollable
+    // ********************************************
+
+
+
 	public  List<Map<String, Object>> query( String sql, int startIndex, int numResults) throws DataAccessException {			
 		return query(
 			new ScrollablePreparedStatementCreator(getDBInfo(), sql, startIndex, numResults ),
 			null,
 			new ScrollableResultSetExtractor<Map<String, Object>>(getDBInfo(), getColumnMapRowMapper(), startIndex, numResults));
-	}			
+	}		
 	
-	// *********************************************
-    // Public Methods for Update and Batch
-    // *********************************************
-
 	public  <T> List<T> query( String sql, int startIndex, int numResults, Class<T> elementType, Object... args) throws DataAccessException {			
 		return query(
 			new ScrollablePreparedStatementCreator(getDBInfo(), sql, startIndex, numResults ), 
@@ -200,6 +239,13 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 			newArgPreparedStatementSetter(args), 
 			new ScrollableResultSetExtractor<T>(getDBInfo(), rowMapper,startIndex, numResults));
 	}
+	
+	// *********************************************
+    // Public Methods for Update and Batch
+    // *********************************************
+	
+	
+	
 
 	// *********************************************
     // Public Methods for Script
