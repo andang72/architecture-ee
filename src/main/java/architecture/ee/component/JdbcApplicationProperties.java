@@ -48,15 +48,26 @@ import architecture.ee.util.StringUtils;
 public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements ApplicationProperties {
 
 	private EventBus eventBus;
-	
+
 	protected final AtomicBoolean initFlag = new AtomicBoolean();
-	
+
 	private boolean localized;
 
+	/**
+	 * when usingExternalSql is true sql key start with 'EXTERANL_' prefix.
+	 */
+    private boolean usingExternalSql ;
+
 	private ConcurrentMap<String, String> properties;
-	
+
 	protected JdbcApplicationProperties(boolean localized) {
 		this.localized = localized;
+		this.usingExternalSql = false;
+	}
+
+	protected JdbcApplicationProperties(boolean localized, boolean usingExternalSql) {
+		this.localized = localized;
+		this.usingExternalSql = usingExternalSql;
 	}
 
 	public void setEventBus(EventBus eventBus) {
@@ -82,7 +93,7 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 	public boolean getBooleanProperty(String name) {
 		return getBooleanProperty(name, false);
 	}
-	
+
 	public boolean getBooleanProperty(String propertyKey, boolean defaultValue) {
 		String value = get(propertyKey);
 		if (value != null)
@@ -98,7 +109,7 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 	public long getLongProperty(String property, long defaultValue) {
 		return NumberUtils.toLong(get(property), defaultValue);
 	}
-	    
+
 	public void clear() {
 		throw new UnsupportedOperationException();
 	}
@@ -175,13 +186,13 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 		return properties.isEmpty();
 	}
 
-	private void firePropertyChangeEvent(PropertyChangeEvent.Type eventType, String propertyName, Object oldValue, Object newValue){		
+	private void firePropertyChangeEvent(PropertyChangeEvent.Type eventType, String propertyName, Object oldValue, Object newValue){
 		if( eventBus != null ){
 			PropertyChangeEvent event = new PropertyChangeEvent(this, eventType, propertyName, oldValue, newValue);
 			eventBus.post(event);
 		}
 	}
-	
+
 	public String put(String key, String value) {
 		String s;
 		if (key == null || value == null)
@@ -200,7 +211,7 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 				key = key.substring(0, key.length() - 1);
 			key = key.trim();
 			String oldValue = (String) properties.put(key, value);
-			
+
 			if (oldValue != null) {
 				if (!oldValue.equals(value)) {
 					updateProperty(key, value);
@@ -256,12 +267,12 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 				String baseKey = StringUtils.substringBeforeLast(name, ".");
 				String localeCode = StringUtils.substringAfterLast(name, ".");
 				getExtendedJdbcTemplate().update(
-						getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.INSERT_LOCALIZED_PROPERTY").getSql(),
+						getBoundSql(getSqlKey("FRAMEWORK_EE.INSERT_LOCALIZED_PROPERTY")).getSql(),
 						new SqlParameterValue(Types.VARCHAR, baseKey),
 						new SqlParameterValue(Types.VARCHAR, value),
 						new SqlParameterValue(Types.VARCHAR, localeCode));
 			} else {
-				getExtendedJdbcTemplate().update(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.INSERT_PROPERTY").getSql(),
+				getExtendedJdbcTemplate().update(getBoundSql(getSqlKey("FRAMEWORK_EE.INSERT_PROPERTY")).getSql(),
 						new SqlParameterValue(Types.VARCHAR, name),
 						new SqlParameterValue(Types.VARCHAR, value));
 			}
@@ -273,14 +284,14 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 			if (localized) {
 				String baseKey = StringUtils.substringBeforeLast(name, ".");
 				String localeCode = StringUtils.substringAfterLast(name, ".");
-				getExtendedJdbcTemplate().update(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.DELETE_LOCALIZED_PROPERTY").getSql(),
+				getExtendedJdbcTemplate().update(getBoundSql(getSqlKey("FRAMEWORK_EE.DELETE_LOCALIZED_PROPERTY")).getSql(),
 						new SqlParameterValue(Types.VARCHAR, (new StringBuilder()).append(baseKey).append("%").toString()),
 						new SqlParameterValue(Types.VARCHAR, (new StringBuilder()).append(localeCode).append("%").toString()));
 
 			} else {
-				getExtendedJdbcTemplate().update(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.DELETE_PROPERTY").getSql(),
+				getExtendedJdbcTemplate().update(getBoundSql("FRAMEWORK_EE.DELETE_PROPERTY").getSql(),
 						new SqlParameterValue(Types.VARCHAR, name));
-				getExtendedJdbcTemplate().update(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.DELETE_PROPERTY").getSql(),
+				getExtendedJdbcTemplate().update(getBoundSql(getSqlKey("FRAMEWORK_EE.DELETE_PROPERTY")).getSql(),
 						new SqlParameterValue(Types.VARCHAR, (new StringBuilder()).append(name).append(".%").toString()));
 			}
 		}
@@ -292,26 +303,26 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 				String baseKey = StringUtils.substringBeforeLast(name, ".");
 				String localeCode = StringUtils.substringAfterLast(name, ".");
 				getExtendedJdbcTemplate().update(
-						getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.UPDATE_LOCALIZED_PROPERTY").getSql(),
+						getBoundSql(getSqlKey("FRAMEWORK_EE.UPDATE_LOCALIZED_PROPERTY")).getSql(),
 						new SqlParameterValue(Types.VARCHAR, value),
 						new SqlParameterValue(Types.VARCHAR, baseKey),
 						new SqlParameterValue(Types.VARCHAR, localeCode));
 			} else {
-				getExtendedJdbcTemplate().update(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.UPDATE_PROPERTY").getSql(),
+				getExtendedJdbcTemplate().update(getBoundSql(getSqlKey("FRAMEWORK_EE.UPDATE_PROPERTY")).getSql(),
 						new SqlParameterValue(Types.VARCHAR, value),
 						new SqlParameterValue(Types.VARCHAR, name));
 			}
 		}
 	}
 
-	private void loadProperties(Map map) {
+	private void loadProperties(Map<String, String> map) {
 
 		if (getJdbcTemplate() != null) {
 
-			Map rs;
+			Map<String, String> rs;
 			if (localized) {
 				rs = getExtendedJdbcTemplate().query(
-						getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.SELECT_ALL_LOCALIZED_PROPERTY").getSql(),
+						getBoundSql(getSqlKey("FRAMEWORK_EE.SELECT_ALL_LOCALIZED_PROPERTY")).getSql(),
 						new ResultSetExtractor<Map<String, String>>() {
 							public Map<String, String> extractData(ResultSet rs)
 									throws SQLException, DataAccessException {
@@ -328,7 +339,7 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 							}
 						});
 			} else {
-				rs = getExtendedJdbcTemplate().query(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.SELECT_ALL_PROPERTY").getSql(),
+				rs = getExtendedJdbcTemplate().query(getBoundSql(getSqlKey("FRAMEWORK_EE.SELECT_ALL_PROPERTY")).getSql(),
 						new ResultSetExtractor<Map<String, String>>() {
 							public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
 								Map<String, String> map = new HashMap<String, String>();
@@ -348,6 +359,18 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 		}
 	}
 
+
+	private String getSqlKey (String name){
+		StringBuilder sb = new StringBuilder();
+		if( usingExternalSql ){
+			sb.append("EXTERNAL_");
+		}
+		sb.append(name);
+		return sb.toString();
+	}
+
+
+
 	////////////////////////////////////////////////
 	// Localized 함수 추가.
 	////////////////////////////////////////////////
@@ -356,7 +379,7 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 		ArrayList<Locale> list = new ArrayList<Locale>();
 		if (getJdbcTemplate() != null) {
 			List<String> locales = getExtendedJdbcTemplate().queryForList(
-					getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.SELECT_LOCALES").getSql(), 
+					getBoundSql(getSqlKey("FRAMEWORK_EE.SELECT_LOCALES")).getSql(),
 					String.class,
 					new SqlParameterValue(Types.VARCHAR, name));
 			for (String localeCode : locales) {

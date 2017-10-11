@@ -151,12 +151,12 @@ public class JdbcSequencer implements Sequencer {
         	con = DataSourceUtils.getConnection(getDataSource());
             if( type == 0 )
             {
-            	pstmt = con.prepareStatement(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.SELECT_SEQUENCER_BY_NAME").getSql());
+            	pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_NAME").getSql());
             	DataSourceUtils.applyTransactionTimeout(pstmt, getDataSource());
             	pstmt.setString(1, name);
             	rs = pstmt.executeQuery();
             	
-            	//logger.debug(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.SELECT_SEQUENCER_BY_NAME").getSql());
+            	//logger.debug(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_NAME").getSql());
             	
             	if( rs.next() ){
             		this.type = rs.getInt(1);
@@ -169,13 +169,13 @@ public class JdbcSequencer implements Sequencer {
                 
             }else{
                 // Get the current ID from the database.
-                pstmt = con.prepareStatement(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.SELECT_SEQUENCER_BY_ID").getSql());
+                pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_ID").getSql());
     	        DataSourceUtils.applyTransactionTimeout(pstmt, getDataSource());         
     	        pstmt.setInt(1, type);
     	        
     	        rs = pstmt.executeQuery();
                 
-    	        //logger.debug(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.SELECT_SEQUENCER_BY_NAME").getSql());
+    	        //logger.debug(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_NAME").getSql());
     	        
     	        if (rs.next()) {
                     currentID = rs.getLong(1);
@@ -192,7 +192,7 @@ public class JdbcSequencer implements Sequencer {
             // The WHERE clause includes the last value of the id. This ensures
             // that an update will occur only if nobody else has performed an
             // update first.
-            pstmt = con.prepareStatement(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.UPDATE_SEQUENCER").getSql());
+            pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.UPDATE_SEQUENCER").getSql());
             pstmt.setLong(1, newID);
             pstmt.setInt(2, type);
             pstmt.setLong(3, currentID);
@@ -236,7 +236,7 @@ public class JdbcSequencer implements Sequencer {
         PreparedStatement pstmt = null;
         try {
         	if(type == 0 && !StringUtils.isNullOrEmpty(name)){
-        		pstmt = con.prepareStatement(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.SELECT_SEQUENCER_MAX_ID").getSql());   
+        		pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_MAX_ID").getSql());   
         		ResultSet rs = pstmt.executeQuery();
         		if( rs.next() ){
         			this.type = rs.getInt(1);
@@ -247,7 +247,7 @@ public class JdbcSequencer implements Sequencer {
                 JdbcUtils.closeStatement(pstmt);
         	}        	
         	
-            pstmt = con.prepareStatement(getBoundSql("ARCHITECTURE_FRAMEWORK_CORE.CREATE_SEQUENCER").getSql());
+            pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.CREATE_SEQUENCER").getSql());
             pstmt.setInt(1, this.type);
 			pstmt.setLong(1, 1L);
 			pstmt.setString(2, this.name);

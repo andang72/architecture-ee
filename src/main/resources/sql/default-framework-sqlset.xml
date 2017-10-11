@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sqlset>
-    <name>ARCHITECTURE_FRAMEWORK_CORE</name>
+    <name>FRAMEWORK_EE</name>
     <version>5.0</version>
     <description>SQL STATEMENT FOR FRAMEWORK EE</description>
 	<!-- ============================================== -->

@@ -109,18 +109,19 @@ public class ConfigServiceImpl implements ConfigService {
 			DataSource dataSourceToUse = this.dataSource;
 			// 데이터베이스 설정이 완료되지 않았다면 널을 리턴한다.
 			if (dataSourceToUse != null) {
-				logger.debug(CommonLogLocalizer.getMessage("003014"));
+				if(logger.isDebugEnabled())
+					logger.debug(CommonLogLocalizer.getMessage("003014"));
+				
 				try {
-					JdbcApplicationProperties impl = new JdbcApplicationProperties(localized);
+					JdbcApplicationProperties impl = new JdbcApplicationProperties(localized, isUsingExternalSql());
 					impl.setSqlConfiguration(sqlConfiguration);
 					impl.setEventBus(eventBus);
 					//ConfigurableJdbcApplicationProperties impl = new ConfigurableJdbcApplicationProperties(localized);
-					
-					
 					impl.setDataSource(dataSourceToUse);
 					impl.afterPropertiesSet();
 					
-					logger.debug(CommonLogLocalizer.format("003015", StringUtils.collectionToCommaDelimitedString(impl.getPropertyNames()) ) );
+					if(logger.isDebugEnabled())
+						logger.debug(CommonLogLocalizer.format("003015", StringUtils.collectionToCommaDelimitedString(impl.getPropertyNames()) ) );
 					
 					return impl;
 					
@@ -140,6 +141,12 @@ public class ConfigServiceImpl implements ConfigService {
 	public boolean isConfigPersistenceJdbcEnabled(){
 		return getLocalProperty(ApplicationConstants.SERVICES_CONFIG_PERSISTENCE_JDBC_ENABLED, false);
 	}
+	
+	
+	public boolean isUsingExternalSql(){
+		return getLocalProperty(ApplicationConstants.SERVICES_CONFIG_PERSISTENCE_JDBC_USING_EXTERNAL_SQL, false);
+	}
+	
 	
 	public Locale getLocale() {
 
