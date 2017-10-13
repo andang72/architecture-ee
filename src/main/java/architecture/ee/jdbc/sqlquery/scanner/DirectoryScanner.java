@@ -167,6 +167,7 @@ public class DirectoryScanner {
 				directoryFile = repository.getFile(path);
 			}
 		}
+		
 		log.debug("starting directory scanner : '{}'" , directory, directoryFile);	
 		if( directoryFile != null)
 			try {

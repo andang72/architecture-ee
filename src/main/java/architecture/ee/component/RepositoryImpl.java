@@ -37,6 +37,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.ServletContextResource;
 
 import architecture.ee.i18n.CommonLogLocalizer;
+import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.service.ApplicationProperties;
 import architecture.ee.service.ConfigRoot;
 import architecture.ee.service.Repository;
@@ -235,8 +236,9 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 	
 	public void setServletContext(ServletContext servletContext) {
 		if (!initailized.get()) {
-			ServletContextResource resource = new ServletContextResource(servletContext, "/WEB-INF");
 			
+			log.info(FrameworkLogLocalizer.format("002001", "Repository", State.INITIALIZING.name()));			
+			ServletContextResource resource = new ServletContextResource(servletContext, "/WEB-INF");
 			log.debug( CommonLogLocalizer.format( "003006", resource.getPath() ));
 			try {
 				File file = resource.getFile();
@@ -248,9 +250,11 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 				rootResource = new FileSystemResource(file);
 				log.debug(CommonLogLocalizer.format( "003007",  rootResource.toString() ));				
 				initailized.set(true);
+				
 			} catch (IOException e) {
 				log.error(CommonLogLocalizer.getMessage("003008"), e);
-			}			
+			}	
+			log.info(FrameworkLogLocalizer.format("002001", "Repository", State.INITIALIZED.name() ));			
 		}
 	}
 

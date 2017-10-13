@@ -35,5 +35,5 @@ public class ApplicationConstants {
 
     public static final String SERVICES_CONFIG_PERSISTENCE_JDBC_ENABLED = "services.config.persistence.jdbc.enabled";
     public static final String SERVICES_CONFIG_PERSISTENCE_JDBC_USING_EXTERNAL_SQL = "services.config.persistence.jdbc.usingExternalSql";
-    
+    public static final String SERVICES_CONFIG_PERSISTENCE_JDBC_EXTERNAL_SQL_FILEPATH = "services.config.persistence.jdbc.filepath";
 }

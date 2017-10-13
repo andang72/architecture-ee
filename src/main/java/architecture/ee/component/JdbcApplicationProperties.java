@@ -31,6 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.SqlParameterValue;
@@ -47,6 +49,8 @@ import architecture.ee.util.StringUtils;
 
 public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements ApplicationProperties {
 
+	private Logger log = LoggerFactory.getLogger(getClass());
+	
 	private EventBus eventBus;
 
 	protected final AtomicBoolean initFlag = new AtomicBoolean();
@@ -366,6 +370,9 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 			sb.append("EXTERNAL_");
 		}
 		sb.append(name);
+		
+		log.debug("using sql : " + sb.toString());
+		
 		return sb.toString();
 	}
 

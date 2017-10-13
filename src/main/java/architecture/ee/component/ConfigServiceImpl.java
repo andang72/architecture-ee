@@ -15,6 +15,9 @@
  */
 package architecture.ee.component;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,11 +32,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import architecture.ee.exception.ConfigurationError;
 import architecture.ee.i18n.CommonLogLocalizer;
+import architecture.ee.i18n.FrameworkLogLocalizer;
+import architecture.ee.jdbc.sqlquery.builder.BuilderException;
+import architecture.ee.jdbc.sqlquery.builder.xml.XmlSqlSetBuilder;
+import architecture.ee.jdbc.sqlquery.factory.SqlQueryFactory;
 import architecture.ee.service.ApplicationProperties;
 import architecture.ee.service.ConfigService;
 import architecture.ee.service.Repository;
@@ -57,8 +66,8 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 	private DataSource dataSource;
 
 	@Autowired(required = false)
-	@Qualifier("sqlConfiguration")
-	private architecture.ee.jdbc.sqlquery.factory.Configuration sqlConfiguration;
+	@Qualifier("sqlQueryFactory")
+	private SqlQueryFactory sqlQueryFactory ;
 	
 	
 	
@@ -78,14 +87,21 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
     
 	public void initialize() {
 		state = State.INITIALIZING;
-		logger.debug(CommonLogLocalizer.format("003001", "ConfigService",state.name() ));
+		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService",state.name() ));
 		boolean isSetDataSource = dataSource != null ? true : false ;
+		
+		if(logger.isInfoEnabled()) {
+			logger.info(FrameworkLogLocalizer.format("002002",  "database", isSetDataSource  ? "true" : "false" ));
+			logger.info(FrameworkLogLocalizer.format("002002",  "persistence", isConfigPersistenceJdbcEnabled() ? "database":"xml" ));
+			logger.info(FrameworkLogLocalizer.format("002002",  "external sql", isUsingExternalSql() ? "true":"false" ));
+		}
+		
 		if( isSetDataSource )
 		{
 			getApplicationProperties();
 		}		
 		state = State.INITIALIZED;
-		logger.debug(CommonLogLocalizer.format("003001", "ConfigService",state.name() ));
+		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService",state.name() ));
 	}
 
 	private ApplicationProperties getApplicationProperties() {
@@ -98,7 +114,6 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 	private ApplicationProperties getSetupProperties() {
 		if (setupProperties == null)
 			this.setupProperties = repository.getSetupApplicationProperties();
-		
 		return setupProperties;
 	}
 
@@ -107,14 +122,19 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 			DataSource dataSourceToUse = this.dataSource;
 			// 데이터베이스 설정이 완료되지 않았다면 널을 리턴한다.
 			if (dataSourceToUse != null) {
-				if(logger.isDebugEnabled())
-					logger.debug(CommonLogLocalizer.getMessage("003014"));
-				
+				if(logger.isDebugEnabled()) {
+					logger.debug(CommonLogLocalizer.getMessage("003014"));					
+				}
 				try {
+					//ConfigurableJdbcApplicationProperties impl = new ConfigurableJdbcApplicationProperties(localized);			
+					
+					if(!StringUtils.isNullOrEmpty( getExternalSqlFilepathIfExist() )) {
+						buildExternalSql(getExternalSqlFilepathIfExist());
+					}
+					
 					JdbcApplicationProperties impl = new JdbcApplicationProperties(localized, isUsingExternalSql());
-					impl.setSqlConfiguration(sqlConfiguration);
+					impl.setSqlConfiguration(sqlQueryFactory.getConfiguration());
 					impl.setEventBus(getEventBus());
-					//ConfigurableJdbcApplicationProperties impl = new ConfigurableJdbcApplicationProperties(localized);
 					impl.setDataSource(dataSourceToUse);
 					impl.afterPropertiesSet();
 					
@@ -130,6 +150,28 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 		}
 		return null;
 	}
+	
+	
+	protected void buildExternalSql(String path) throws BuilderException {	
+		try {	
+			File file = null ;		
+			if( StringUtils.startsWithIgnoreCase(path, "file:")){					
+				try {
+					file = (new FileSystemResourceLoader()).getResource(path).getFile();
+				} catch (IOException e) { /* ignore */ }					
+			}else{
+				file = repository.getFile(path);
+			}
+			if( file != null && file.exists()) {
+				XmlSqlSetBuilder builder = new XmlSqlSetBuilder(new FileInputStream(file), sqlQueryFactory.getConfiguration(), file.toURI().toString(), null);
+				builder.parse();
+			}
+		} catch (IOException e) {
+			throw new BuilderException("fail to parse external sql file", e);
+		}
+	}
+	
+	
 
 	public boolean isSetupComplete(){
 		return getLocalProperty(ApplicationConstants.SETUP_COMPLETE_PROP_NAME, false);
@@ -143,6 +185,10 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 	
 	public boolean isUsingExternalSql(){
 		return getLocalProperty(ApplicationConstants.SERVICES_CONFIG_PERSISTENCE_JDBC_USING_EXTERNAL_SQL, false);
+	}
+	
+	public String getExternalSqlFilepathIfExist(){
+		return getLocalProperty(ApplicationConstants.SERVICES_CONFIG_PERSISTENCE_JDBC_EXTERNAL_SQL_FILEPATH, null);
 	}
 	
 	

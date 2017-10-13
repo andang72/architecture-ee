@@ -46,7 +46,7 @@ public class RepositoryTest {
 	@Test
 	public void testRepository(){
 		log.debug("repository config path : {}", repository.getFile("config"));
-		log.debug("startup properties : {}", repository.getSetupApplicationProperties());		
+		log.debug("startup properties : {}", repository.getSetupApplicationProperties());	
 	}
 	class StateChangeEventListener {
 		

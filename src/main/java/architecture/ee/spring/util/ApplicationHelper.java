@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import architecture.ee.exception.ComponentNotFoundException;
 import architecture.ee.i18n.CommonLogLocalizer;
+import architecture.ee.service.ConfigService;
 import architecture.ee.util.StringUtils;
 
 public final class ApplicationHelper implements ApplicationContextAware {
@@ -42,6 +43,9 @@ public final class ApplicationHelper implements ApplicationContextAware {
 		return true;
 	}
 	
+	public static ConfigService getConfigService(){
+		return getComponent(ConfigService.class);
+	}
 	
 	public static <T> T getComponent(Class<T> requiredType) {
 

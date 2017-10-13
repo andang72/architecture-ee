@@ -22,7 +22,7 @@
                
      <beans:bean id="repository" class="architecture.ee.component.RepositoryImpl" ></beans:bean>
      
-     <!-- <beans:bean id="dataSource" class="architecture.ee.spring.jdbc.datasource.DataSourceFactoryBean" p:profileName="default" lazy-init="true"/> -->
+      <beans:bean id="dataSource" class="architecture.ee.spring.jdbc.datasource.DataSourceFactoryBean" p:profileName="default" lazy-init="true"/> 
      
      <beans:bean id="configService" class="architecture.ee.component.ConfigServiceImpl" init-method="initialize" />
      
@@ -40,4 +40,9 @@
 	
      <tx:annotation-driven transaction-manager="transactionManager"/> -->
 
+
+     <!-- <beans:bean id="sqlQueryDirectoryScanner" class="architecture.ee.jdbc.sqlquery.scanner.DirectoryScanner" p:sqlQueryFactory-ref="sqlQueryFactory" depends-on="sqlQueryFactory" init-method="initialize" destroy-method="destroy">
+     	<beans:property name="directory" value="${services.sql.location}"></beans:property>
+     </beans:bean> -->
+     
 </beans:beans> 

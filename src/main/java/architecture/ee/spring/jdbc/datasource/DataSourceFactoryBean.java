@@ -39,7 +39,6 @@ public class DataSourceFactoryBean extends DefaultDataSourceFactory implements F
 				invoker.prepare();
 				invoker.invoke();
 			}
-		
 		}
 	}
 

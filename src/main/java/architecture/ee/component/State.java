@@ -46,7 +46,12 @@ public enum State {
     /**
      */
     DESTROYED("DESTROYED"),
-
+    
+    CREATING("CREATING"),
+    /**
+     */
+    CREATED("CREATED"),
+    
     /**
      */
     POST_UPGRADE_STARTED("POST_UPGRADE_STARTED");

@@ -25,9 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.MethodInvoker;
 
+import architecture.ee.component.State;
 import architecture.ee.exception.RuntimeError;
 import architecture.ee.i18n.CommonLogLocalizer;
+import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.service.ApplicationProperties;
 import architecture.ee.service.Repository;
 
@@ -38,6 +42,11 @@ import architecture.ee.service.Repository;
  */
 public class DefaultDataSourceFactory implements DataSourceFactory {
 	
+	private static final String DBCP_CALSSNAME = "org.apache.commons.dbcp.BasicDataSource";
+	
+	private static final String DBCP2_CALSSNAME = "org.apache.commons.dbcp2.BasicDataSource";
+	
+	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired( required = true) @Qualifier("repository")
@@ -46,6 +55,8 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 	private String profileName ;	
 	
 	public DataSource getDataSource() {			
+		
+		
 		
 		String profileTag = "database." + profileName ;		
 		
@@ -59,6 +70,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 			throw new RuntimeError(CommonLogLocalizer.format("003041", profileName));
 		
 		for( String dataSourceProvider : dataSourceProviders ){
+			DataSource dataSourceToUse = null ;
 			String providerTag = profileTag + "." + dataSourceProvider	;	
 			if("jndiDataSourceProvider".equals(dataSourceProvider))
 			{
@@ -71,36 +83,78 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 				return lookup.getDataSource(jndiName);
 				
 			}else if ("pooledDataSourceProvider".equals(dataSourceProvider)){				
-
+				log.debug(FrameworkLogLocalizer.format("002003", "DataSource", State.CREATING.name()));
 				String driverClassName = config.get(providerTag + ".driverClassName");
 			    String url = config.get(providerTag + ".url");
 			    String username = config.get(providerTag + ".username");
 			    String password = config.get(providerTag + ".password");
 			    
-			    if(log.isDebugEnabled())
-			    	log.debug(CommonLogLocalizer.format("003043", driverClassName, url));
+			    if(log.isDebugEnabled()) {
+			    		log.debug(CommonLogLocalizer.format("003043", driverClassName, url));
+			    }			    
 			    
-			    org.apache.commons.dbcp2.BasicDataSource dbcp = new org.apache.commons.dbcp2.BasicDataSource();
-			    
-			    dbcp.setDriverClassName(driverClassName);
-			    dbcp.setUrl(url);
-			    dbcp.setUsername(username);
-			    dbcp.setPassword(password);			    
-			    String propertiesTag = providerTag + ".connectionProperties";			    
-			    for(String name : config.getChildrenNames(propertiesTag) ){
-			    	String value = config.get( propertiesTag + "." + name );
-			    	
-			    	if(log.isDebugEnabled())
-			    		log.debug(CommonLogLocalizer.format("003044", name, value));
-			    	
-			    	dbcp.addConnectionProperty(name, value);
-			    }			  
-			    
-			    return dbcp;
+			    	    		
+			    if( dataSourceToUse == null && ClassUtils.isPresent(DBCP2_CALSSNAME, null) ) {
+		    			dataSourceToUse = newDbcpDataSource(providerTag, config, DBCP2_CALSSNAME, driverClassName, url, username, password);
+		    		}			    		
+		    		if( dataSourceToUse == null && ClassUtils.isPresent(DBCP_CALSSNAME, null) ) {
+		    			dataSourceToUse = newDbcpDataSource(providerTag, config, DBCP_CALSSNAME, driverClassName, url, username, password);
+		    		}		    		
+		    		log.debug(FrameworkLogLocalizer.format("002003", "DataSource",  State.CREATED.name()));		    		
+		    		return dataSourceToUse;
 			}
 		}		
 		return null;
 	}
+	
+	
+	private DataSource newDbcpDataSource(String providerTag, ApplicationProperties config, String className, String driverClassName, String url, String username, String password) {
+		DataSource dataSourceToUse = null;
+		try {
+			
+			if(log.isErrorEnabled())
+				log.debug( FrameworkLogLocalizer.format("003010", className ));
+			
+			Class targetClass = ClassUtils.resolveClassName(className, null);
+			Object targetObject = targetClass.getConstructor().newInstance();
+
+			MethodInvoker invoker = new MethodInvoker();
+			invoker.setTargetObject(targetObject);
+			invoker.setTargetMethod("setDriverClassName");
+			invoker.setArguments(new Object[] { driverClassName });
+			invoker.prepare();
+			invoker.invoke();
+
+			invoker.setTargetMethod("setUrl");
+			invoker.setArguments(new Object[] { url });
+			invoker.prepare();
+			invoker.invoke();
+
+			invoker.setTargetMethod("setUsername");
+			invoker.setArguments(new Object[] { username });
+			invoker.prepare();
+			invoker.invoke();
+
+			invoker.setTargetMethod("setPassword");
+			invoker.setArguments(new Object[] { password });
+			invoker.prepare();
+			invoker.invoke();
+			
+		    String propertiesTag = providerTag + ".connectionProperties";			    
+		    for(String name : config.getChildrenNames(propertiesTag) ){
+		    		String value = config.get( propertiesTag + "." + name );		    	
+		    		if(log.isDebugEnabled())
+		    			log.debug(CommonLogLocalizer.format("003044", name, value));		    		
+				invoker.setTargetMethod("addConnectionProperty");
+				invoker.setArguments(new Object[] { name, value});
+				invoker.prepare();
+				invoker.invoke();				
+		    	}
+		    dataSourceToUse = (DataSource) targetObject;
+		} catch (Exception e) { }
+		return dataSourceToUse;
+	}
+	
 
 	public String getProfileName() {
 		return profileName;
