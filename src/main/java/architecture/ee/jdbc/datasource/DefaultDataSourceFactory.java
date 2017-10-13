@@ -43,10 +43,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 	@Autowired( required = true) @Qualifier("repository")
 	private Repository repository;
 	
-	
 	private String profileName ;	
-
-
 	
 	public DataSource getDataSource() {			
 		
@@ -55,7 +52,8 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 		ApplicationProperties config = repository.getSetupApplicationProperties();		
 		Collection<String> dataSourceProviders = config.getChildrenNames(profileTag);				
 		
-		log.debug(CommonLogLocalizer.format("003040", profileName));		
+		if(log.isDebugEnabled())
+			log.debug(CommonLogLocalizer.format("003040", profileName));		
 	
 		if( dataSourceProviders.size() == 0 )
 			throw new RuntimeError(CommonLogLocalizer.format("003041", profileName));
@@ -72,17 +70,18 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 				JndiDataSourceLookup lookup = new JndiDataSourceLookup();
 				return lookup.getDataSource(jndiName);
 				
-			}else if ("pooledDataSourceProvider".equals(dataSourceProvider)){
-				
+			}else if ("pooledDataSourceProvider".equals(dataSourceProvider)){				
 
 				String driverClassName = config.get(providerTag + ".driverClassName");
 			    String url = config.get(providerTag + ".url");
 			    String username = config.get(providerTag + ".username");
 			    String password = config.get(providerTag + ".password");
 			    
-			    log.debug(CommonLogLocalizer.format("003043", driverClassName, url));
+			    if(log.isDebugEnabled())
+			    	log.debug(CommonLogLocalizer.format("003043", driverClassName, url));
 			    
 			    org.apache.commons.dbcp2.BasicDataSource dbcp = new org.apache.commons.dbcp2.BasicDataSource();
+			    
 			    dbcp.setDriverClassName(driverClassName);
 			    dbcp.setUrl(url);
 			    dbcp.setUsername(username);
@@ -90,7 +89,10 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 			    String propertiesTag = providerTag + ".connectionProperties";			    
 			    for(String name : config.getChildrenNames(propertiesTag) ){
 			    	String value = config.get( propertiesTag + "." + name );
-			    	log.debug(CommonLogLocalizer.format("003044", name, value));
+			    	
+			    	if(log.isDebugEnabled())
+			    		log.debug(CommonLogLocalizer.format("003044", name, value));
+			    	
 			    	dbcp.addConnectionProperty(name, value);
 			    }			  
 			    
@@ -103,7 +105,6 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 	public String getProfileName() {
 		return profileName;
 	}
-
 	
 	public void setProfileName(String profileName) {
 		this.profileName = profileName;

@@ -32,8 +32,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.eventbus.EventBus;
-
 import architecture.ee.exception.ConfigurationError;
 import architecture.ee.i18n.CommonLogLocalizer;
 import architecture.ee.service.ApplicationProperties;
@@ -44,15 +42,15 @@ import architecture.ee.util.LocaleUtils;
 import architecture.ee.util.NumberUtils;
 import architecture.ee.util.StringUtils;
 
-public class ConfigServiceImpl implements ConfigService {
+public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 
 	@Autowired(required = true)
 	@Qualifier("repository")
 	private Repository repository;
 
-	@Autowired(required = true)
-	@Qualifier("eventBus")
-	private EventBus eventBus;
+	//@Autowired(required = true)
+	//@Qualifier("eventBus")
+	//private EventBus eventBus;
 	
 	@Autowired(required = false)
 	@Qualifier("dataSource")
@@ -115,7 +113,7 @@ public class ConfigServiceImpl implements ConfigService {
 				try {
 					JdbcApplicationProperties impl = new JdbcApplicationProperties(localized, isUsingExternalSql());
 					impl.setSqlConfiguration(sqlConfiguration);
-					impl.setEventBus(eventBus);
+					impl.setEventBus(getEventBus());
 					//ConfigurableJdbcApplicationProperties impl = new ConfigurableJdbcApplicationProperties(localized);
 					impl.setDataSource(dataSourceToUse);
 					impl.afterPropertiesSet();
@@ -353,13 +351,13 @@ public class ConfigServiceImpl implements ConfigService {
 	}
 
 	public void registerEventListener(Object listener) {
-		if( eventBus != null)
-			eventBus.register(listener);
+		if( getEventBus() != null)
+			getEventBus().register(listener);
 	}
 
 	public void unregisterEventListener(Object listener) {
-		if( eventBus != null)
-			eventBus.unregister(listener);
+		if( getEventBus() != null)
+			getEventBus().unregister(listener);
 	}
 
 }

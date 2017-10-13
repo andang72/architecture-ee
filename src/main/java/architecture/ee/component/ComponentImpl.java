@@ -15,12 +15,17 @@
  */
 package architecture.ee.component;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import com.google.common.eventbus.EventBus;
 
 import architecture.ee.service.Component;
 
 public class ComponentImpl implements Component {
-
+	
+	@Autowired(required = true)
+	@Qualifier("eventBus")
 	private EventBus eventBus;
 
 	protected EventBus getEventBus(){
