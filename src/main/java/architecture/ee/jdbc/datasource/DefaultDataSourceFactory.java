@@ -34,6 +34,7 @@ import architecture.ee.i18n.CommonLogLocalizer;
 import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.service.ApplicationProperties;
 import architecture.ee.service.Repository;
+import architecture.ee.util.ApplicationConstants;
 
 /**
  * startup-config.xml 에 database 
@@ -54,9 +55,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 	
 	private String profileName ;	
 	
-	public DataSource getDataSource() {			
-		
-		
+	public DataSource getDataSource() {		
 		
 		String profileTag = "database." + profileName ;		
 		
@@ -66,8 +65,19 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 		if(log.isDebugEnabled())
 			log.debug(CommonLogLocalizer.format("003040", profileName));		
 	
-		if( dataSourceProviders.size() == 0 )
-			throw new RuntimeError(CommonLogLocalizer.format("003041", profileName));
+		if( dataSourceProviders.size() == 0 ) {
+			
+			if( config.getBooleanProperty(ApplicationConstants.SETUP_COMPLETE_PROP_NAME, false))
+			{
+				throw new RuntimeError(CommonLogLocalizer.format("003041", profileName));
+			}
+			if( log.isWarnEnabled()) {
+				log.warn(CommonLogLocalizer.format("003041", profileName));
+				log.warn(FrameworkLogLocalizer.format("003019", profileName));
+				
+				return new FailSafeDummyDataSource();
+			}
+		}
 		
 		for( String dataSourceProvider : dataSourceProviders ){
 			DataSource dataSourceToUse = null ;

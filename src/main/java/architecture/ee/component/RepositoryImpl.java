@@ -125,7 +125,7 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 						// setup end
 						
 						// license start
-						root.addComment("LICENSE SETTING");
+						root.addComment("LICENSE SETTING HERE!");
 						org.dom4j.Element licenseNode = root.addElement("license");
 						// license end
 						
@@ -142,7 +142,7 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 						// view end
 						
 						// security start			
-						root.addComment("SECURITY SETTING");
+						root.addComment("SECURITY SETTING HERE!");
 						org.dom4j.Element securityNode = root.addElement("security");
 						org.dom4j.Element encrpptNode = securityNode.addElement("encrypt");
 						encrpptNode.addElement("algorithm").setText("Blowfish");
@@ -155,7 +155,11 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 						// services start
 						root.addComment("SERVICES SETTING HERE !");
 						org.dom4j.Element servicesNode = root.addElement("services");
-						servicesNode.addElement("sql").addElement("location").addText("sql");
+						servicesNode.addComment("config service");
+						servicesNode.addElement("config").addElement("persistence").addElement("jdbc").addElement("enabled").setText("false");
+						servicesNode.addComment("sqlquery service");
+						servicesNode.addElement("sqlquery").addElement("resource").addElement("location").setText("sql");
+						
 						// services end
 						// component setting start
 						root.addComment("COMPONENTS SETTING HERE!");

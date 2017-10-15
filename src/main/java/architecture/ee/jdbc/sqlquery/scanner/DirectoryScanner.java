@@ -159,6 +159,7 @@ public class DirectoryScanner {
 			VariableMapImpl impl = new VariableMapImpl(repository.getSetupApplicationProperties());
 			String path = impl.expand(directory);
 			log.debug("initializing scanner : {} > '{}'" , directory, path);
+			
 			if( StringUtils.startsWithIgnoreCase(path, "file:")){					
 				try {
 					directoryFile = resourceLoader.getResource(path).getFile();
@@ -166,6 +167,7 @@ public class DirectoryScanner {
 			}else{
 				directoryFile = repository.getFile(path);
 			}
+			
 		}
 		
 		log.debug("starting directory scanner : '{}'" , directory, directoryFile);	
