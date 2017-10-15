@@ -39,7 +39,7 @@
      </beans:bean>
  
       <beans:bean id="sqlQueryDirectoryScanner" class="architecture.ee.jdbc.sqlquery.scanner.DirectoryScanner" p:sqlQueryFactory-ref="sqlQueryFactory" depends-on="sqlQueryFactory" init-method="initialize" destroy-method="destroy">
-     	<beans:property name="directory" value="${services.sql.location}"></beans:property>
+     	<beans:property name="directory" value="${services.sqlquery.resource.location}"></beans:property>
      </beans:bean>   
      
      <bean id="sqlConfiguration" factory-bean="sqlQueryFactory" factory-method="getConfiguration" />
