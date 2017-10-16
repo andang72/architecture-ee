@@ -7,7 +7,7 @@
 
 
 ## 오픈 소스 
-COMPILE
+<b>COMPILE</b>
 - spingframework 4.3.2.RELEASE
 - commons-io 2.5
 - commons-codec 1.10
@@ -27,7 +27,7 @@ COMPILE
 - ojdbc5 11.1.0
 - log4j 1.2.14
 
-TEST
+<b>TEST</b>
 
 - spring-test 4.3.2.RELEASE
 - junit 4.12
