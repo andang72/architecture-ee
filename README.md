@@ -6,30 +6,29 @@
 - 데이터베이스 조작시 자바 코드와 쿼리 문을 XML 파일을 사용하여 분리하여 사용하는 것을 지원.
 
 
-- 오픈 소스 
-COMPILE
+## 오픈 소스 
+<b>COMPILE</b>
+- spingframework 4.3.2.RELEASE
+- commons-io 2.5
+- commons-codec 1.10
+- commons-dbcp2 1.4, 2.1
+- commons-pool2 2.4.2
+- commons-io 2.5
+- commons-logging 1.2
+- freemarker 2.3.25-incubating
+- dom4j-1.6
+- xml-apis 1.0.b2
+- guava 20.0
+- slf4j-api 1.7.22
+- slf4j-log4j12 1.7.22
 
-spingframework 4.3.2.RELEASE
-commons-io 2.5
-commons-codec 1.10
-commons-dbcp2 1.4, 2.1
-commons-pool2 2.4.2
-commons-io 2.5
-commons-logging 1.2
-freemarker 2.3.25-incubating
-dom4j-1.6
-xml-apis 1.0.b2
-guava 20.0
-slf4j-api 1.7.22
-slf4j-log4j12 1.7.22
 
+<b>RUNTIME</b>
+- ojdbc5 11.1.0
+- log4j 1.2.14
 
-RUNTIME
-ojdbc5 11.1.0
-log4j 1.2.14
+<b>TEST</b>
 
-TEST
-
-spring-test 4.3.2.RELEASE
-junit 4.12
-hamcrest-core 1.3
+- spring-test 4.3.2.RELEASE
+- junit 4.12
+- hamcrest-core 1.3
