@@ -16,24 +16,18 @@
 package architecture.ee.spring.jdbc.support;
 
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.lob.LobHandler;
 
-import architecture.ee.spring.jdbc.ExtendedJdbcTemplate;
-import architecture.ee.util.StringUtils;
 import architecture.ee.i18n.CommonLogLocalizer;
 import architecture.ee.jdbc.sqlquery.SqlQuery;
 import architecture.ee.jdbc.sqlquery.factory.SqlQueryFactory;
+import architecture.ee.spring.jdbc.ExtendedJdbcTemplate;
+import architecture.ee.util.StringUtils;
 
 
 /**

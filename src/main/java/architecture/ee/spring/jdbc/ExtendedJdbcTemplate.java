@@ -41,7 +41,6 @@ import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.jdbc.core.SqlProvider;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
-import org.springframework.jdbc.support.lob.OracleLobHandler;
 import org.springframework.util.Assert;
 
 import architecture.ee.spring.jdbc.ExtendedJdbcUtils.DB;
