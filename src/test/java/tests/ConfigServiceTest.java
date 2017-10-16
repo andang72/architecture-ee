@@ -15,6 +15,11 @@
  */
 package tests;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.jar.Manifest;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -47,6 +52,20 @@ public class ConfigServiceTest {
 		log.debug( "{}={}" , name, value);		
 	}
 	
+	
+	@Test
+	public void testMinifest() {
+		URLClassLoader cl = (URLClassLoader) getClass().getClassLoader();
+		try {
+		  URL url = cl.findResource("META-INF/MANIFEST.MF");
+		  Manifest manifest = new Manifest(url.openStream());
+		  // do stuff with it
+		  log.debug("==============================");
+		  log.debug( manifest.getEntries().toString() );	
+		} catch (IOException E) {
+		  // handle
+		}
+	}
 	
 	@Test
 	public void testSetGetProperty(){

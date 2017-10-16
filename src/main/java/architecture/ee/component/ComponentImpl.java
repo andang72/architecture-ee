@@ -23,6 +23,11 @@ import com.google.common.eventbus.EventBus;
 import architecture.ee.component.event.StateChangeEvent;
 import architecture.ee.service.Component;
 
+/**
+ * 
+ * @author donghyuck
+ *
+ */
 public class ComponentImpl implements Component {
 	
 	@Autowired(required = true)

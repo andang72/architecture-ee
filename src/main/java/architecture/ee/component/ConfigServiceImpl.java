@@ -19,12 +19,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.jar.Manifest;
 
 import javax.sql.DataSource;
 
@@ -94,7 +97,7 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 			logger.info(FrameworkLogLocalizer.format("002002",  "persistence", isConfigPersistenceJdbcEnabled() ? "database":"xml" ));
 			logger.info(FrameworkLogLocalizer.format("002002",  "external sql", isUsingExternalSql() ? "true":"false" ));
 		}
-		
+			
 		if( isSetDataSource )
 		{
 			getApplicationProperties();

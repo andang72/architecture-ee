@@ -1,6 +1,10 @@
 package tests;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Random;
+import java.util.jar.Manifest;
 
 public class DiseTest {
 	
@@ -72,12 +76,26 @@ public class DiseTest {
        System.out.println( "10-" + count1  );
        System.out.println( "20-" + count2  );		
        
+       
+		
+		URLClassLoader cl = (URLClassLoader) getClass().getClassLoader();
+		try {
+		  URL url = cl.findResource("META-INF/MANIFEST.MF");
+		  Manifest manifest = new Manifest(url.openStream());
+		  // do stuff with it
+		  System.out.println( manifest.getEntries() );	
+		} catch (IOException E) {
+		  // handle
+		}
+		
 	}
 	
 	public static void main(String args[]) throws Exception {
 		System.out.println( "--------" );
 		(new DiseTest()).run();
 		System.out.println( "--------" );
+
+		
 
 	}
 }

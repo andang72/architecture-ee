@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>architecture</groupId>
 	<artifactId>architecture-ee</artifactId>
-	<version>5.0.0-RELEASE</version>
+	<version>5.0.1-RELEASE</version>
 
 	<inceptionYear>2010</inceptionYear>
 	<name>architecture-ee</name>
@@ -20,7 +20,7 @@
 		<javac.src.version>1.7</javac.src.version>
 		<javac.target.version>1.7</javac.target.version>
 		<project.javadoc.docEncoding>UTF-8</project.javadoc.docEncoding>
-		<project.build.version>5.0.0-RELEASE</project.build.version>
+		<project.build.version>5.0.1-RELEASE</project.build.version>
 		<project.dependency.spring.version>4.3.2.RELEASE</project.dependency.spring.version>
 		<project.dependency.spring-security.version>4.1.3.RELEASE</project.dependency.spring-security.version>
 		<javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
