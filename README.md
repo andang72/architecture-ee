@@ -23,7 +23,7 @@ COMPILE
 - slf4j-log4j12 1.7.22
 
 
--- RUNTIME
+<b>RUNTIME</b>
 - ojdbc5 11.1.0
 - log4j 1.2.14
 
