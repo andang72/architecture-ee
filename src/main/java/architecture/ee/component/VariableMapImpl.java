@@ -39,12 +39,12 @@ public class VariableMapImpl implements VariableMap {
 			variables.put(name, properties.getProperty(name));
 	}
 
-	void append(StringBuffer stringbuffer, String string, int i, int j) {
-		if (j < 0)
-			j = string.length() - i;
-		stringbuffer.ensureCapacity(stringbuffer.length() + j);
-		j += i;
-		for (int k = i; k < j; k++)
+	void append(StringBuffer stringbuffer, String string, int start, int end) {
+		if (end < 0)
+			end = string.length() - start;
+		stringbuffer.ensureCapacity(stringbuffer.length() + end);
+		end += start;
+		for (int k = start; k < end; k++)
 			stringbuffer.append(string.charAt(k));
 
 	}

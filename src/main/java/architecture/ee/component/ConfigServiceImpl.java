@@ -85,7 +85,7 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 
     private String characterEncoding = null;
     
-	public void initialize() {
+	public void initialize() {		
 		state = State.INITIALIZING;
 		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService",state.name() ));
 		boolean isSetDataSource = dataSource != null ? true : false ;
@@ -100,7 +100,11 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 		{
 			getApplicationProperties();
 		}		
+		
+		State oldState = state;
 		state = State.INITIALIZED;
+		fireStateChangeEvent(oldState, state);
+		
 		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService",state.name() ));
 	}
 

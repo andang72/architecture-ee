@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.google.common.eventbus.EventBus;
 
+import architecture.ee.component.event.StateChangeEvent;
 import architecture.ee.service.Component;
 
 public class ComponentImpl implements Component {
@@ -50,4 +51,9 @@ public class ComponentImpl implements Component {
 			eventBus.unregister(this);		
 	}	
 	
+	protected void fireStateChangeEvent(State oldState, State newState) {
+		StateChangeEvent event = new StateChangeEvent(this, oldState, newState);
+		if( eventBus != null)
+			eventBus.post(event);
+	}
 }

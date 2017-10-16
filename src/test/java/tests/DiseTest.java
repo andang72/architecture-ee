@@ -8,9 +8,14 @@ public class DiseTest {
 	public class CardNumberHolder {
         int firstNum;
         int lastNum;
-        public CardNumberHolder (int fristNum, int lastNum ){
+        
+        public CardNumberHolder (int firstNum, int lastNum ){
             this.firstNum = firstNum;
             this.lastNum = lastNum;
+        }
+        
+        public String toString() {
+        		return  firstNum + "-" + lastNum ;
         }
     }
 	
@@ -40,7 +45,7 @@ public class DiseTest {
        int count1 = 0 ;
        int count2 = 0 ;
        
-       for( int i = 0 ; i < 100 ; i ++ )
+       for( int i = 0 ; i < 1000 ; i ++ )
        {
            if( randomObject.nextDouble() < 0.3 ){
                java.util.Collections.shuffle(list1);
@@ -56,16 +61,16 @@ public class DiseTest {
                lastCardNum = cardNumberHolder.lastNum;
            }
            int sum = firstCardNum + lastCardNum ;
-           if( sum / 2 == 0)
+           System.out.println( firstCardNum + "+" + lastCardNum +  " = " + sum  + ", " + sum % 2);    
+           
+           if( sum % 2 == 0)
            	    count2 ++ ;
            else 
            		count1 ++ ;
-           
-           System.out.println( sum );        	
        }
        
-       System.out.println( "1-" + count1  );
-       System.out.println( "2-" + count2  );		
+       System.out.println( "10-" + count1  );
+       System.out.println( "20-" + count2  );		
        
 	}
 	
