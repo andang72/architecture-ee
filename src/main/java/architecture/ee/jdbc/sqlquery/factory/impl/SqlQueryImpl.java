@@ -40,6 +40,9 @@ public class SqlQueryImpl extends ExtendedJdbcDaoSupport implements SqlQuery {
 	
 	private int maxResults = DEFAULT_MAX_RESULTS ;
 
+	private Map<String, Object> additionalParameters = new HashMap<String, Object>(4);
+	
+	
 	public SqlQueryImpl() {
 		super();
 	}
@@ -57,7 +60,23 @@ public class SqlQueryImpl extends ExtendedJdbcDaoSupport implements SqlQuery {
 		this.maxResults = maxResults;
 		return this;
 	}
+
+	public SqlQuery setAdditionalParameters(Map<String, Object> additionalParameters) {
+		this.additionalParameters = additionalParameters; //FixedSizeMap.decorate( additionalParameters );
+		return this;
+	}
+	
+	public BoundSql getBoundSql(String statement) {		
+		BoundSql sql;		
+		if( additionalParameters.size() > 0)		
+			sql = super.getBoundSqlWithAdditionalParameter(statement, additionalParameters);
+		else 
+			sql = super.getBoundSql(statement);	
 		
+		additionalParameters.clear();
+		return sql;
+	}
+	
 	public Map<String, Object> queryForObject(String statemenKey, Object... params){
 		BoundSql boundSql = getBoundSql(statemenKey);	
 		return getExtendedJdbcTemplate().queryForMap(boundSql.getSql(), params );

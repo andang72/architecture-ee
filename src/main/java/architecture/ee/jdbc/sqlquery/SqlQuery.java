@@ -54,6 +54,13 @@ public interface SqlQuery {
      */
     public SqlQuery setMaxResults(int maxResults);
         
+    /**
+     * 다이나믹 쿼리 사용을 위한 추가 파라메터 값 설정 .
+     * @param additionalParameters
+     * @return
+     */
+	public SqlQuery setAdditionalParameters(Map<String, Object> additionalParameters);
+    
     public <T> List<T> queryForList(String statemenKey, Class<T> elementType);
     
     public <T> List<T> queryForList(String statemenKey, Class<T> elementType, Object... params );
