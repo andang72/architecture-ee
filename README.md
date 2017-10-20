@@ -1,5 +1,5 @@
 # architecture-ee
-[![Build Status]
+[![Build Status]]
 
 ## 소개
 
