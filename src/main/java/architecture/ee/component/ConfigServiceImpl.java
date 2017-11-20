@@ -36,8 +36,6 @@ import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.eventbus.EventBus;
-
 import architecture.ee.exception.ConfigurationError;
 import architecture.ee.i18n.CommonLogLocalizer;
 import architecture.ee.i18n.FrameworkLogLocalizer;

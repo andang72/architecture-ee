@@ -101,9 +101,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 			    
 			    if(log.isDebugEnabled()) {
 			    		log.debug(CommonLogLocalizer.format("003043", driverClassName, url));
-			    }			    
-			    
-			    	    		
+			    }		
 			    if( dataSourceToUse == null && ClassUtils.isPresent(DBCP2_CALSSNAME, null) ) {
 		    			dataSourceToUse = newDbcpDataSource(providerTag, config, DBCP2_CALSSNAME, driverClassName, url, username, password);
 		    		}			    		
