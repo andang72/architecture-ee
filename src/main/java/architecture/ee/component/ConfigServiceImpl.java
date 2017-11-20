@@ -19,15 +19,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.jar.Manifest;
 
 import javax.sql.DataSource;
 
@@ -38,6 +35,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.eventbus.EventBus;
 
 import architecture.ee.exception.ConfigurationError;
 import architecture.ee.i18n.CommonLogLocalizer;
@@ -59,9 +58,11 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 	@Qualifier("repository")
 	private Repository repository;
 
-	//@Autowired(required = true)
-	//@Qualifier("eventBus")
-	//private EventBus eventBus;
+	/**
+	@Autowired(required = true)
+	@Qualifier("eventBus")
+	private EventBus eventBus;
+	**/
 	
 	@Autowired(required = false)
 	@Qualifier("dataSource")
