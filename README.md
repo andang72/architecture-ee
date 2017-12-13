@@ -11,8 +11,8 @@
 ## Opensource
 
 **COMPILE**
-Opensource | Version 
-spingframework | 4.3.2.RELEASE
+Opensource|Version 
+spingframework|4.3.2.RELEASE
 commons-io | 2.5
 commons-codec | 1.10
 commons-dbcp2 | 1.4, 2.1
