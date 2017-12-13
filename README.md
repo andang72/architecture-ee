@@ -40,10 +40,10 @@ jdbc programming with xml.
 
 | Opensource | Version |
 |------------|---------|
- ojdbc5 | 11.1.0
- log4j | 1.2.14
+|   ojdbc5 | 11.1.0 |
+|   log4j | 1.2.14 |
 
-*TEST
+* TEST
 
 | Opensource | Version |
 |------------|---------|
