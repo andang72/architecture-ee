@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.BeansWrapperBuilder;
+import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 
@@ -34,15 +36,20 @@ public class DynamicSqlNode implements SqlNode {
 	public enum Language {
 		VELOCITY, FREEMARKER
 	}
-	private static BeansWrapper wrapper = new BeansWrapper();
+	
+	//private static BeansWrapper wrapper = new BeansWrapper();
+	
+	private static BeansWrapper wrapper = new BeansWrapperBuilder(Configuration.VERSION_2_3_25).build();
+	
 	protected static void populateStatics(Map<String, Object> model) {
 		try {
 			TemplateHashModel enumModels = wrapper.getEnumModels();
 			model.put("enums", enumModels);
 		} catch (UnsupportedOperationException e) {
 		}
-		//TemplateHashModel staticModels = wrapper.getStaticModels();
-		model.put("statics", BeansWrapper.getDefaultInstance().getStaticModels());
+		//TemplateHashModel staticModels = wrapper.getStaticModels();		
+		//model.put("statics", BeansWrapper.getDefaultInstance().getStaticModels());		
+		model.put("statics", wrapper.getStaticModels() );
 	}
 	protected Logger log = LoggerFactory.getLogger(getClass());
 
@@ -95,10 +102,14 @@ public class DynamicSqlNode implements SqlNode {
 		StringWriter writer = new StringWriter();
 		if( language == Language.FREEMARKER ){
 			try {
+				
 				populateStatics(model);
-				freemarker.template.SimpleHash root = new freemarker.template.SimpleHash();
+				freemarker.template.SimpleHash root = new freemarker.template.SimpleHash(wrapper); // new freemarker.template.SimpleHash();
+				
 				root.putAll(model);
+				
 				freemarker.template.Template template = new freemarker.template.Template("dynamic", reader, null);
+				
 				template.process(root, writer);
 			} catch (IOException e) {
 				log.error("", e);
@@ -111,7 +122,6 @@ public class DynamicSqlNode implements SqlNode {
 
 	@Override
 	public String toString() {
-
 		return "dynamic[" + text + "]";
 	}
 }

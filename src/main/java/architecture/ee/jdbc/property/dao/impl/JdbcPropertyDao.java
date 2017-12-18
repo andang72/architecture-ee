@@ -28,9 +28,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.util.StringUtils;
 
-import architecture.ee.jdbc.property.dao.PropertyDao;
-import architecture.ee.util.StringUtils;
+import architecture.ee.jdbc.property.dao.PropertyDao; 
 
 public class JdbcPropertyDao extends JdbcDaoSupport implements PropertyDao {
 
