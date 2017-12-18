@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>architecture</groupId>
 	<artifactId>architecture-ee</artifactId>
-	<version>5.0.2-RELEASE</version>
+	<version>5.0.3-RELEASE</version>
 
 	<inceptionYear>2010</inceptionYear>
 	<name>architecture-ee</name>
