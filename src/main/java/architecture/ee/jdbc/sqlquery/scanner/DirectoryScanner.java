@@ -106,9 +106,7 @@ public class DirectoryScanner {
 	private ResourceLoader resourceLoader;
 	
 	@Autowired( required = true)
-	private Repository repository;
-
-	
+	private Repository repository; 
 	
 	private String directory;
 

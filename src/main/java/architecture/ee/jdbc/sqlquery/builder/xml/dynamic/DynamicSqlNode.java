@@ -105,11 +105,11 @@ public class DynamicSqlNode implements SqlNode {
 				
 				populateStatics(model);
 				freemarker.template.SimpleHash root = new freemarker.template.SimpleHash(wrapper); // new freemarker.template.SimpleHash();
-				
 				root.putAll(model);
 				
 				freemarker.template.Template template = new freemarker.template.Template("dynamic", reader, null);
-				
+				template.setNumberFormat("computer");
+				//template.getConfiguration().setNumberFormat("");
 				template.process(root, writer);
 			} catch (IOException e) {
 				log.error("", e);
