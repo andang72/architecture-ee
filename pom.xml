@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>architecture</groupId>
 	<artifactId>architecture-ee</artifactId>
-	<version>5.0.3-RELEASE</version>
+	<version>5.0.4-RELEASE</version>
 
 	<inceptionYear>2010</inceptionYear>
 	<name>architecture-ee</name>
@@ -91,10 +91,15 @@
 			<version>2.3.25-incubating</version>
 		</dependency>
 
-		<dependency>
+<!-- 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
+		</dependency> -->
+		<dependency>
+		    <groupId>org.dom4j</groupId>
+		    <artifactId>dom4j</artifactId>
+		    <version>2.0.2</version>
 		</dependency>
 
 		<dependency>
