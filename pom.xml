@@ -7,7 +7,6 @@
 	<version>5.1.1-RELEASE</version> 
 	<inceptionYear>2010</inceptionYear>
 	<name>architecture-ee</name>
-	<packaging>pom</packaging>
 	<description>자바기반의 엔터프라이즈 어플리케이션 개발 아키텍처</description>
 	<developers>
 		<developer>
