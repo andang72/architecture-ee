@@ -55,7 +55,6 @@ public class JdbcPropertyDao extends JdbcDaoSupport implements PropertyDao {
 		StringBuilder builder = new StringBuilder("SELECT ").append(PROPERTY_NAME_COLUMN_NAME).append(", ").append(PROPERTY_VALUE_COLUMN_NAME).append(" FROM ").append(table);
 		builder.append(" WHERE ");
 		builder.append(typeField).append(" =?");
-
 		return getJdbcTemplate().query(builder.toString(), new ResultSetExtractor<Map<String, String>>(){
 			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {				
 				Map<String, String> rows = new HashMap<String, String>();				
@@ -88,6 +87,7 @@ public class JdbcPropertyDao extends JdbcDaoSupport implements PropertyDao {
         	final List<Object[]> copy = new ArrayList<Object[]>(properties.size());
         	
         	Set<Map.Entry<String, String>> set = properties.entrySet();
+        	
         	//SqlParameterSource[] batchArgs = new SqlParameterSource[set.size()];
         	
         	for( Map.Entry<String, String> entry : set ){
