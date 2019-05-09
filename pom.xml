@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>architecture</groupId>
 	<artifactId>architecture-ee</artifactId>
@@ -15,6 +14,7 @@
 			<email>donghyuck.son@gmail.com</email>
 		</developer>
 	</developers>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<javac.src.version>1.8</javac.src.version>
@@ -95,7 +95,8 @@
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
-		</dependency> -->
+		</dependency> 
+		-->
 		
 		<dependency>
 		    <groupId>org.dom4j</groupId>
@@ -103,11 +104,18 @@
 		    <version>2.1.1</version>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>20.0</version>
+		</dependency> -->
+		
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>27.1-jre</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -258,7 +266,4 @@
 		</repository>
 	</distributionManagement>
 
-	<modules>
-		<module>?</module>
-	</modules>
 </project>
