@@ -29,12 +29,12 @@
 | commons-pool2 | 2.4.2 |
 | commons-io | 2.5 |
 | commons-logging | 1.2 |
-| freemarker | 2.3.25-incubating |
-| dom4j | 1.6 |
+| freemarker | 2.3.28 |
+| dom4j | 2.1.1 |
 | xml-apis | 1.0.b2 |
-| guava | 20.0 |
-| slf4j-api | 1.7.22 |
-| slf4j-log4j12 | 1.7.22 |
+| guava | 27.1-jre |
+| slf4j-api | 1.7.26 |
+| slf4j-log4j12 | 1.7.26 |
 
 
 * RUNTIME
