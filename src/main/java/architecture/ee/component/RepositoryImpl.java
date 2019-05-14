@@ -65,9 +65,9 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 	public ConfigRoot getConfigRoot() {
 		try {
 			File file = new File( getRootResource().getFile() , "config" );
-			log.debug(CommonLogLocalizer.format( "003010",  file.getPath() ));			
+			log.debug(FrameworkLogLocalizer.format( "002010",  file.getPath() ));			
 			Resource child = new FileSystemResource(file);			
-			log.debug(CommonLogLocalizer.format( "003005",  child.exists() ));
+			log.debug(FrameworkLogLocalizer.format( "002005",  child.exists() ));
 			return new ConfigRootImpl(child);
 		} catch (Exception e) {
 			return null;
@@ -98,7 +98,7 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 				if (!file.exists()){					
 					boolean error = false;
 				    // create default file...
-				    log.debug(CommonLogLocalizer.format("003012", file.getAbsolutePath()));
+				    log.debug(FrameworkLogLocalizer.format("002012", file.getAbsolutePath()));
 				    
 				    Writer writer = null;
 				    
@@ -230,12 +230,12 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 
 	public void initialize(){
 		state = State.INITIALIZING;		
-		log.debug(CommonLogLocalizer.format("003001", "Repository",state.name() ));
+		log.debug(FrameworkLogLocalizer.format("002001", "Repository",state.name() ));
 		if(initailized.get()) {			
-			log.debug(CommonLogLocalizer.getMessage("003003"));
+			log.debug(FrameworkLogLocalizer.getMessage("002003"));
 		}		
 		state = State.INITIALIZED;
-		log.debug(CommonLogLocalizer.format("003001", "Repository",state.name() ));
+		log.debug(FrameworkLogLocalizer.format("002001", "Repository",state.name() ));
 	}
 	
 	public void setServletContext(ServletContext servletContext) {

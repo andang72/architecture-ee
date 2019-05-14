@@ -88,7 +88,7 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
     
 	public void initialize() {		
 		state = State.INITIALIZING;
-		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService",state.name() ));
+		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService", state.name() ));
 		boolean isSetDataSource = dataSource != null ? true : false ;
 		
 		if(logger.isInfoEnabled()) {
@@ -128,7 +128,7 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 			// 데이터베이스 설정이 완료되지 않았다면 널을 리턴한다.
 			if (dataSourceToUse != null) {
 				if(logger.isDebugEnabled()) {
-					logger.debug(CommonLogLocalizer.getMessage("003014"));					
+					logger.debug(FrameworkLogLocalizer.getMessage("002014"));					
 				}
 				try {
 					//ConfigurableJdbcApplicationProperties impl = new ConfigurableJdbcApplicationProperties(localized);			
