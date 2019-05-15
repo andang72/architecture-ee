@@ -20,19 +20,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.FileUtils;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.ServletContextResource;
 
@@ -42,6 +47,7 @@ import architecture.ee.service.ApplicationProperties;
 import architecture.ee.service.ConfigRoot;
 import architecture.ee.service.Repository;
 import architecture.ee.util.ApplicationConstants;
+import architecture.ee.util.StringUtils;
 
 /**
  * 
@@ -50,6 +56,8 @@ import architecture.ee.util.ApplicationConstants;
  */
 public class RepositoryImpl implements Repository, ServletContextAware {
 
+	private static final String LOGO = "META-INF/logo"; 
+	
 	private AtomicBoolean initailized = new AtomicBoolean(false);
 
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -61,6 +69,32 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 	private ApplicationProperties setupProperties = null;
 	
 	private State state = State.NONE;
+	
+	public RepositoryImpl() {
+		super();
+		printLogo ();
+	}
+
+	public void printLogo () { 
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		try { 
+			Enumeration<URL> resources = cl.getResources(LOGO);
+			do {
+				if(!resources.hasMoreElements()) 
+					break;
+				
+				URL resourceUrl = resources.nextElement();
+				File file = ResourceUtils.getFile(resourceUrl);
+				String str = FileUtils.readFileToString(file, "UTF-8"); 
+				System.out.println( str ); 
+				String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
+				String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.1-RELEASE");  
+				System.out.println( String.format("  %s : %s", title, version ) );
+			} while (true);
+		} catch (IOException e) {
+			log.warn("WOOPS", e);
+		}
+	}
 	
 	public ConfigRoot getConfigRoot() {
 		try {
@@ -99,18 +133,13 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 					boolean error = false;
 				    // create default file...
 				    log.debug(FrameworkLogLocalizer.format("002012", file.getAbsolutePath()));
-				    
 				    Writer writer = null;
-				    
 				    if(!file.getParentFile().exists() )
 				    {
 				    	file.getParentFile().mkdirs();
 				    }
-				    
 				    try {
-				    	
 				    	lock.lock();
-				    	
 				    	writer = new OutputStreamWriter(new FileOutputStream(file),	StandardCharsets.UTF_8);
 				    	XMLWriter xmlWriter = new XMLWriter(writer, OutputFormat.createPrettyPrint());
 				    	StringBuilder sb = new StringBuilder();
@@ -233,7 +262,7 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 		log.debug(FrameworkLogLocalizer.format("002001", "Repository",state.name() ));
 		if(initailized.get()) {			
 			log.debug(FrameworkLogLocalizer.getMessage("002003"));
-		}		
+		}
 		state = State.INITIALIZED;
 		log.debug(FrameworkLogLocalizer.format("002001", "Repository",state.name() ));
 	}

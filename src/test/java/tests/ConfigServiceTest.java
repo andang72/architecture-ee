@@ -20,6 +20,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.Manifest;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -45,10 +47,21 @@ public class ConfigServiceTest {
     private ConfigService configService;
 	
 	
+	@Before
+    public void runBeforeTestMethod() {
+		configService.registerEventListener(this);
+    }
+	
+	@After
+    public void runAfterTestMethod() {
+		configService.unregisterEventListener(this);
+    }
+	
 	@Test
 	public void testGetProperty(){
 		String name = "setup.complete";
 		String value = configService.getLocalProperty(name);
+		
 		log.debug( "{}={}" , name, value);		
 	}
 	
@@ -77,6 +90,13 @@ public class ConfigServiceTest {
 		configService.setLocalProperty(name, "false");
 		value = configService.getLocalProperty(name);
 		log.debug( "after set {}={}" , name, value);	
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+
+		}
+		
 	}
 
 	@Test
@@ -94,8 +114,7 @@ public class ConfigServiceTest {
 		log.debug( "LOCALE {}, TIMEZONE {}, ENCODING {}" , configService.getLocale().getDisplayName(), configService.getTimeZone().getDisplayName() , configService.getCharacterEncoding());
 	}
 	
-	class PropertyChangeEventListener {
-		
+	class PropertyChangeEventListener { 
 		@Subscribe 
 		public void handel(PropertyChangeEvent e) {
 		    log.debug("EVENT ************** {} {}", e.getSource().getClass().getName(), e.getEventType().name());

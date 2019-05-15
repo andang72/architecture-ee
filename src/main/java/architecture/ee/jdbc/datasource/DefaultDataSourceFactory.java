@@ -29,8 +29,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.MethodInvoker;
 
 import architecture.ee.component.State;
-import architecture.ee.exception.RuntimeError;
-import architecture.ee.i18n.CommonLogLocalizer;
+import architecture.ee.exception.RuntimeError; 
 import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.service.ApplicationProperties;
 import architecture.ee.service.Repository;
@@ -63,16 +62,16 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 		Collection<String> dataSourceProviders = config.getChildrenNames(profileTag);				
 		
 		if(log.isDebugEnabled())
-			log.debug(CommonLogLocalizer.format("003040", profileName));		
+			log.debug(FrameworkLogLocalizer.format("003040", profileName));		
 	
 		if( dataSourceProviders.size() == 0 ) {
 			
 			if( config.getBooleanProperty(ApplicationConstants.SETUP_COMPLETE_PROP_NAME, false))
 			{
-				throw new RuntimeError(CommonLogLocalizer.format("003041", profileName));
+				throw new RuntimeError(FrameworkLogLocalizer.format("003041", profileName));
 			}
 			if( log.isWarnEnabled()) {
-				log.warn(CommonLogLocalizer.format("003041", profileName));
+				log.warn(FrameworkLogLocalizer.format("003041", profileName));
 				log.warn(FrameworkLogLocalizer.format("003019", profileName));
 				
 				return new FailSafeDummyDataSource();
@@ -87,7 +86,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 				String jndiNameTag = providerTag + ".jndiName";				
 				String jndiName = config.get( jndiNameTag + ".jndiName");		
 				
-				Assert.hasText(jndiName, CommonLogLocalizer.getMessage("003042"));		
+				Assert.hasText(jndiName, FrameworkLogLocalizer.getMessage("003042"));		
 				
 				JndiDataSourceLookup lookup = new JndiDataSourceLookup();
 				return lookup.getDataSource(jndiName);
@@ -100,7 +99,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 			    String password = config.get(providerTag + ".password");
 			    
 			    if(log.isDebugEnabled()) {
-			    		log.debug(CommonLogLocalizer.format("003043", driverClassName, url));
+			    		log.debug(FrameworkLogLocalizer.format("003043", driverClassName, url));
 			    }		
 			    if( dataSourceToUse == null && ClassUtils.isPresent(DBCP2_CALSSNAME, null) ) {
 		    			dataSourceToUse = newDbcpDataSource(providerTag, config, DBCP2_CALSSNAME, driverClassName, url, username, password);
@@ -152,7 +151,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 		    for(String name : config.getChildrenNames(propertiesTag) ){
 		    		String value = config.get( propertiesTag + "." + name );		    	
 		    		if(log.isDebugEnabled())
-		    			log.debug(CommonLogLocalizer.format("003044", name, value));		    		
+		    			log.debug(FrameworkLogLocalizer.format("003044", name, value));		    		
 				invoker.setTargetMethod("addConnectionProperty");
 				invoker.setArguments(new Object[] { name, value});
 				invoker.prepare();
