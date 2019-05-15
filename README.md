@@ -13,6 +13,40 @@
 
 5.1.x 버전 부터는 Java 8+ 지원
 
+spring context 파일에 아래의 내용을 추가한다.
+	
+  <import resource="classpath:context/default-bootstrap-context.xml"/>	
+	<import resource="classpath:context/default-components-context.xml"/>
+	<import resource="classpath:context/default-transaction-context.xml"/>
+	<import resource="classpath:context/default-freemarker-context.xml"/>
+	<import resource="classpath:context/default-ehcache-context.xml"/>
+  
+JTA transaction 을 사용하는 경우 default-transaction-context.xml 을 주석처리하고 JTA 설정을 추가한다.
+DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설정을 아래와 같이 설정한다.
+
+  <!-- database connection configuration -->
+   <default>
+      <pooledDataSourceProvider> 
+          <driverClassName></driverClassName> 
+          <url></url>
+          <username></username>
+          <password></password>
+          <connectionProperties>
+              <initialSize>1</initialSize>
+              <maxActive>8</maxActive>
+              <maxIdle>8</maxIdle>
+              <maxWait>-1</maxWait>
+              <minIdle>0</minIdle>
+              <testOnBorrow>true</testOnBorrow>
+              <testOnReturn>false</testOnReturn>
+              <testWhileIdle>false</testWhileIdle>
+              <validationQuery>select 1 from dual</validationQuery>
+          </connectionProperties>
+      </pooledDataSourceProvider>
+  
+    </default> 
+  </database> 
+  
 ------
 
 
