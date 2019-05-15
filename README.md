@@ -14,6 +14,8 @@
 5.1.x 버전 부터는 Java 8+ 지원
 
 spring context 파일에 아래의 내용을 추가한다.
+
+```xml
 	
   <import resource="classpath:context/default-bootstrap-context.xml"/>	
 	<import resource="classpath:context/default-components-context.xml"/>
@@ -43,9 +45,10 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
               <validationQuery>select 1 from dual</validationQuery>
           </connectionProperties>
       </pooledDataSourceProvider>
-  
     </default> 
   </database> 
+ ``` 
+  
   
 ------
 
