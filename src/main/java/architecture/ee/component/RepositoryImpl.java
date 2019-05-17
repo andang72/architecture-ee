@@ -132,7 +132,7 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 				if (!file.exists()){					
 					boolean error = false;
 				    // create default file...
-				    log.debug(FrameworkLogLocalizer.format("002012", file.getAbsolutePath()));
+				    log.debug(FrameworkLogLocalizer.format("003012", file.getAbsolutePath()));
 				    Writer writer = null;
 				    if(!file.getParentFile().exists() )
 				    {
