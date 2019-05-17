@@ -58,7 +58,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 		
 		String profileTag = "database." + profileName ;		
 		
-		ApplicationProperties config = repository.getSetupApplicationProperties();		
+		ApplicationProperties config = repository.getSetupApplicationProperties();
 		Collection<String> dataSourceProviders = config.getChildrenNames(profileTag);				
 		
 		if(log.isDebugEnabled())

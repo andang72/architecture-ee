@@ -27,7 +27,6 @@
      </beans:bean>          
                
                
-               
      <beans:bean id="dataSource" class="architecture.ee.spring.jdbc.datasource.DataSourceFactoryBean" p:profileName="default" lazy-init="true"/>
      
      <beans:bean id="configService" class="architecture.ee.component.ConfigServiceImpl" init-method="initialize" />
