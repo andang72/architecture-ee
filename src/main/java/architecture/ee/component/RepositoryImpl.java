@@ -15,9 +15,12 @@
  */
 package architecture.ee.component;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
@@ -29,7 +32,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
@@ -37,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.ServletContextResource;
@@ -56,7 +62,7 @@ import architecture.ee.util.StringUtils;
  */
 public class RepositoryImpl implements Repository, ServletContextAware {
 
-	private static final String LOGO = "META-INF/logo"; 
+	private static final String LOGO = "/META-INF/logo"; 
 	
 	private AtomicBoolean initailized = new AtomicBoolean(false);
 
@@ -76,21 +82,17 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 	}
 
 	public void printLogo () { 
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		
 		try { 
-			Enumeration<URL> resources = cl.getResources(LOGO);
-			do {
-				if(!resources.hasMoreElements()) 
-					break;
-				
-				URL resourceUrl = resources.nextElement();
-				File file = ResourceUtils.getFile(resourceUrl);
-				String str = FileUtils.readFileToString(file, "UTF-8"); 
-				System.out.println( str ); 
+				InputStream in = getClass().getResourceAsStream(LOGO); 
+				if( in != null) {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+					String str = IOUtils.toString(in, Charsets.toCharset(ApplicationConstants.DEFAULT_CHAR_ENCODING)); 
+					System.out.println( str ); 
+				}
 				String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
 				String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.1-RELEASE");  
 				System.out.println( String.format("  %s : %s", title, version ) );
-			} while (true);
 		} catch (IOException e) {
 			log.warn("WOOPS", e);
 		}

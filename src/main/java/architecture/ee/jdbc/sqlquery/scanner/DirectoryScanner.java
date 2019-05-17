@@ -31,6 +31,7 @@ import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
 import architecture.ee.component.VariableMapImpl;
+import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.jdbc.sqlquery.builder.BuilderException;
 import architecture.ee.jdbc.sqlquery.builder.xml.XmlSqlSetBuilder;
 import architecture.ee.jdbc.sqlquery.factory.SqlQueryFactory;
@@ -53,7 +54,7 @@ public class DirectoryScanner {
 				XmlSqlSetBuilder builder = new XmlSqlSetBuilder(new FileInputStream(file), sqlQueryFactory.getConfiguration(), file.toURI().toString(), null);
 				builder.parse();
 			} catch (IOException e) {
-				throw new BuilderException("build faild", e);
+				throw new BuilderException(FrameworkLogLocalizer.format("003050", file.getPath()), e);
 			}
 		}
 
@@ -115,14 +116,20 @@ public class DirectoryScanner {
 	}
 
 	protected void buildFromDirectory(File file) throws BuilderException {
+		
+		if( !file.isDirectory() ) {
+			log.warn( FrameworkLogLocalizer.format("003051", file.getPath()));
+			return ;
+		}
+		
 		for( File f : FileUtils.listFiles(file, FileFilterUtils.suffixFileFilter(sqlQueryFactory.getConfiguration().getSuffix()), FileFilterUtils.trueFileFilter())){			
 			if( !sqlQueryFactory.getConfiguration().isResourceLoaded(f.toURI().toString())){
-				log.debug("building " + f.toURI().toString());
+				log.debug(FrameworkLogLocalizer.format("003052", file.toURI()));
 				try {					
 					XmlSqlSetBuilder builder = new XmlSqlSetBuilder(new FileInputStream(f), sqlQueryFactory.getConfiguration(), f.toURI().toString(), null);
 					builder.parse();
 				} catch (IOException e) {
-					throw new BuilderException("build faild", e);
+					throw new BuilderException(FrameworkLogLocalizer.format("003050", file.getPath()), e);
 				}	
 			}
 		}
@@ -132,9 +139,9 @@ public class DirectoryScanner {
 		
 		if( monitor != null)
 		{
-			log.debug("stopping sqlquery directory scanner...");
+			log.debug(FrameworkLogLocalizer.getMessage("003053"));
 			monitor.stop();
-			log.debug("stopped sqlquery directory scanner...");
+			log.debug(FrameworkLogLocalizer.getMessage("003054"));
 		}
 	}
 
@@ -156,7 +163,7 @@ public class DirectoryScanner {
 		if( !StringUtils.isNullOrEmpty(directory)){			
 			VariableMapImpl impl = new VariableMapImpl(repository.getSetupApplicationProperties());
 			String path = impl.expand(directory);
-			log.debug("initializing scanner : {} > '{}'" , directory, path);
+			log.debug(FrameworkLogLocalizer.format("003055", directory,  path));
 			
 			if( StringUtils.startsWithIgnoreCase(path, "file:")){					
 				try {
@@ -168,7 +175,7 @@ public class DirectoryScanner {
 			
 		}
 		
-		log.debug("starting directory scanner : '{}'" , directory, directoryFile);	
+		log.debug(FrameworkLogLocalizer.format("003056", directoryFile.getPath()));
 		if( directoryFile != null)
 			try {
 				buildFromDirectory(directoryFile);
@@ -192,7 +199,7 @@ public class DirectoryScanner {
 	}
 	
 	public void start(File file ) throws Exception {
-		log.debug("starting '{0}' file alter observer ...", file.getAbsolutePath());
+		log.debug(FrameworkLogLocalizer.format("003057", file.getAbsolutePath() ));
 		if( monitor == null)
 		{			
 			monitor = new FileAlterationMonitor(pollIntervalMillis);	
@@ -201,7 +208,7 @@ public class DirectoryScanner {
 			monitor.addObserver(observer);			
 		}
 		monitor.start();
-		log.debug("started '{0}' file alter observer ...", file.getAbsolutePath());
+		log.debug(FrameworkLogLocalizer.format("003058", file.getAbsolutePath()) );
 	}
 	
 }
