@@ -59,7 +59,7 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 
 | Opensource | Version |
 |------------|---------|
-| spingframework | 4.3.2.RELEASE |
+| spingframework | 4.3.23.RELEASE |
 | commons-io | 2.5 |
 | commons-codec | 1.10 |
 | commons-dbcp2 | 1.4, 2.1 |
@@ -85,7 +85,7 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 
 | Opensource | Version |
 |------------|---------|
-|  spring-test | 4.3.2.RELEASE |
+|  spring-test | 4.3.23.RELEASE |
 |  junit | 4.12 |
 |  hamcrest-core | 1.3 |
 
