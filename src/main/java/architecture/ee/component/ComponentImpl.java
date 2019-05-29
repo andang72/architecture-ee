@@ -17,6 +17,7 @@ package architecture.ee.component;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 
 import com.google.common.eventbus.EventBus;
 
@@ -30,13 +31,17 @@ import architecture.ee.service.Component;
  */
 public class ComponentImpl implements Component {
 	
-	@Autowired(required = true)
+	@Autowired(required = false)
 	@Qualifier("eventBus")
 	private EventBus eventBus;
 
+	@Autowired(required = false)
+	private ApplicationEventPublisher applicationEventPublisher;	
+	
 	protected EventBus getEventBus(){
 		return eventBus;
 	}
+	
 	public void publish(Object event) {		
 		if( eventBus != null)
 			eventBus.post(event);
@@ -60,5 +65,8 @@ public class ComponentImpl implements Component {
 		StateChangeEvent event = new StateChangeEvent(this, oldState, newState);
 		if( eventBus != null)
 			eventBus.post(event);
+		if( applicationEventPublisher != null )
+			applicationEventPublisher.publishEvent(event);
+		
 	}
 }

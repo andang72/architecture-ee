@@ -39,6 +39,8 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -47,6 +49,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.ServletContextResource;
 
+import architecture.ee.component.event.StateChangeEvent;
 import architecture.ee.i18n.CommonLogLocalizer;
 import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.service.ApplicationProperties;
@@ -75,6 +78,9 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 	private ApplicationProperties setupProperties = null;
 	
 	private State state = State.NONE;
+	
+	@Autowired(required = false)
+	private ApplicationEventPublisher applicationEventPublisher;	
 	
 	public RepositoryImpl() {
 		super();
@@ -267,6 +273,7 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 		}
 		state = State.INITIALIZED;
 		log.debug(FrameworkLogLocalizer.format("002001", "Repository",state.name() ));
+	
 	}
 	
 	public void setServletContext(ServletContext servletContext) {
@@ -289,8 +296,17 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 			} catch (IOException e) {
 				log.error(CommonLogLocalizer.getMessage("003008"), e);
 			}	
-			log.info(FrameworkLogLocalizer.format("002001", "Repository", State.INITIALIZED.name() ));			
+			log.info(FrameworkLogLocalizer.format("002001", "Repository", State.INITIALIZED.name() ));	
+			
+			fireStateChangeEvent( State.INITIALIZING, State.INITIALIZED);
 		}
 	}
 
+	protected void fireStateChangeEvent(State oldState, State newState) {
+		StateChangeEvent event = new StateChangeEvent(this, oldState, newState);
+ 
+		if( applicationEventPublisher != null )
+			applicationEventPublisher.publishEvent(event);
+		
+	}
 }

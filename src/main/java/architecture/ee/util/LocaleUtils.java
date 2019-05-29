@@ -62,7 +62,7 @@ public class LocaleUtils {
 		    }
 		});
 		return locales;
-	    }
+	}
 
 	public static boolean isValidCharacterEncoding(String encoding) {
 		boolean valid = true;

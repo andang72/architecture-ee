@@ -56,12 +56,6 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 	@Qualifier("repository")
 	private Repository repository;
 
-	/**
-	@Autowired(required = true)
-	@Qualifier("eventBus")
-	private EventBus eventBus;
-	**/
-	
 	@Autowired(required = false)
 	@Qualifier("dataSource")
 	private DataSource dataSource;
