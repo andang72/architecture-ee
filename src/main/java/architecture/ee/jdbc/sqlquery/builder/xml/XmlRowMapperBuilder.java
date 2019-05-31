@@ -52,6 +52,7 @@ public class XmlRowMapperBuilder extends AbstractBuilder {
 
 		String idToUse = context.getStringAttribute(XML_ATTR_ID_TAG);
 		String nameToUse = context.getStringAttribute(XML_ATTR_NAME_TAG);
+		
 		if (StringUtils.isEmpty(idToUse))
 			idToUse = nameToUse;
 
@@ -61,7 +62,7 @@ public class XmlRowMapperBuilder extends AbstractBuilder {
 		ClassLoader loader = contextCL == null ? ClassUtils.class.getClassLoader() : contextCL;
 		Class<?> mappedClass = ClassUtils.resolveClassName(classNameToUse, loader);
 		List<ParameterMapping> parameterMappings = parseParameterMappings(context);
-
+		
 	}
 
 	private List<ParameterMapping> parseParameterMappings(XNode node) {

@@ -38,6 +38,7 @@ public class SqlQueryBuilderAssistant extends AbstractBuilder {
 	}
 
 	public MappedStatement addMappedStatement(String id, String description, SqlSource sqlSource, StatementType statementType, Integer fetchSize, Integer timeout) {
+		
 		String idToUse = applyCurrentNamespace(id);		
 		MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, idToUse, sqlSource, statementType);
 		statementBuilder.resource(resource);

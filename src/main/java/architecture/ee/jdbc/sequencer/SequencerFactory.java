@@ -24,8 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import architecture.ee.i18n.CommonLogLocalizer;
+ 
+import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.jdbc.sequencer.annotation.MaxValue;
 import architecture.ee.jdbc.sqlquery.factory.Configuration;
 import architecture.ee.service.ConfigService;
@@ -68,7 +68,7 @@ public class SequencerFactory {
 
 	public int getType(String name){
 		if( StringUtils.isNullOrEmpty( name ))
-			throw new IllegalArgumentException(CommonLogLocalizer.getMessage("003101"));		
+			throw new IllegalArgumentException(FrameworkLogLocalizer.getMessage("003101"));		
 		if (sequencersByName.containsKey(name)) {
 			return sequencersByName.get(name).getType();
 		}
@@ -77,16 +77,19 @@ public class SequencerFactory {
 	
 	public long getNextValue(String name) {
 		if( StringUtils.isNullOrEmpty( name ))
-			throw new IllegalArgumentException(CommonLogLocalizer.getMessage("003101"));		
+			throw new IllegalArgumentException(FrameworkLogLocalizer.getMessage("003101"));		
 		if (sequencersByName.containsKey(name)) {
 			return sequencersByName.get(name).getNextValue();
 		} else {
 			
-			logger.debug(CommonLogLocalizer.format("003105", null, name));
+			logger.debug(FrameworkLogLocalizer.format("003105", null, name));
 			
 			int blockSize = 1 ;
 			if(configService!=null)
 				blockSize = configService.getLocalProperty("services.sequencer.blockSize", blockSize);
+			
+			logger.debug(FrameworkLogLocalizer.format("003107", name, blockSize));
+			
 			JdbcSequencer sequencer = new JdbcSequencer(name, blockSize);
 			sequencer.setDataSource(dataSource);
 			sequencer.setSqlConfiguration(sqlConfiguration);	
@@ -104,11 +107,13 @@ public class SequencerFactory {
 			// Verify type is valid from the db, if so create an instance for
 			// the type
 			// And return the next unique id
-			logger.debug(CommonLogLocalizer.format("003105", type, null));
+			logger.debug(FrameworkLogLocalizer.format("003105", type, null));
 			
 			int blockSize = 1 ;
 			if(configService!=null)
 				blockSize = configService.getLocalProperty("services.sequencer.blockSize", blockSize);
+			
+			logger.debug(FrameworkLogLocalizer.format("003107", type, blockSize));
 			
 			JdbcSequencer sequencer = new JdbcSequencer(type, blockSize);
 			sequencer.setDataSource(dataSource);
@@ -124,8 +129,11 @@ public class SequencerFactory {
 		}
 		
 		int blockSize = 1 ;		
-		if(configService!=null)
-			blockSize = configService.getLocalProperty("services.sequencer.blockSize", blockSize);			
+		if(configService != null)
+			blockSize = configService.getLocalProperty("services.sequencer.blockSize", blockSize);		
+		 
+		logger.debug(FrameworkLogLocalizer.format("003107", name, blockSize));
+		
 		JdbcSequencer sequencer = new JdbcSequencer(type, name, blockSize);;
 		sequencer.setDataSource(dataSource);
 		sequencer.setSqlConfiguration(sqlConfiguration);		
@@ -136,12 +144,11 @@ public class SequencerFactory {
 	public long getNextValue(Object object) {
 		MaxValue max = object.getClass().getAnnotation(MaxValue.class);
 		if (max == null) {
-			String msg = CommonLogLocalizer.format("003106", object.getClass());
+			String msg = FrameworkLogLocalizer.format("003106", object.getClass());
 			logger.error(msg);
 			throw new IllegalArgumentException(msg);
 		}		
-		return getNextValue(max.id(), max.name());
-		
+		return getNextValue(max.id(), max.name()); 
 	}
 	
 	public static class Builder{		

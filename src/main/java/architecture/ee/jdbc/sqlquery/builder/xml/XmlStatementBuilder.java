@@ -44,7 +44,7 @@ public class XmlStatementBuilder extends AbstractBuilder {
 	public static final String XML_NODE_DESCRIPTION_TAG = "description";
 	public static final String XML_NODE_PARAMETER_MAPPING_TAG = "parameterMapping";
 	public static final String XML_NODE_PARAMETER_MAPPINGS_TAG = "parameterMappings";
-
+	
 	public static final String XML_ATTR_STATEMENT_TYPE_TAG = "statementType";
 	public static final String XML_ATTR_FETCH_SIZE_TAG = "fetchSize";
 	public static final String XML_ATTR_TIMEOUT_TAG = "timeout";
@@ -55,6 +55,7 @@ public class XmlStatementBuilder extends AbstractBuilder {
 	public static final String XML_ATTR_FUNCTION_TAG = "function";
 	public static final String XML_ATTR_SCRIPT_TAG = "script";
 	public static final String XML_ATTR_COMMENT_TAG = "comment";
+	public static final String XML_ATTR_MAPPER_TAG = "mapper";
 	public static final String XML_ATTR_DESCRIPTION_TAG = "description";
 
 	private Logger log = LoggerFactory.getLogger(XmlStatementBuilder.class);

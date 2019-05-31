@@ -70,6 +70,7 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 | dom4j | 2.1.1 |
 | xml-apis | 1.0.b2 |
 | guava | 27.1-jre |
+| ehcache | 3.7.0 |
 | slf4j-api | 1.7.26 |
 | slf4j-log4j12 | 1.7.26 |
 
