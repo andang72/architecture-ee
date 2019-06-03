@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import architecture.ee.jdbc.sqlquery.factory.Configuration;
 import architecture.ee.jdbc.sqlquery.mapping.MappedStatement;
+import architecture.ee.jdbc.sqlquery.mapping.MapperSource;
 import architecture.ee.jdbc.sqlquery.mapping.SqlSource;
 import architecture.ee.jdbc.sqlquery.mapping.StatementType;
 
@@ -37,6 +38,16 @@ public class SqlQueryBuilderAssistant extends AbstractBuilder {
 		this.resource = resource;
 	}
 
+	public MapperSource addMapperSource(String id, MapperSource  mapperSource){
+		String idToUse = applyCurrentNamespace(id);
+		
+		mapperSource.setID(idToUse);
+		if(logger.isTraceEnabled())
+			logger.trace( "Mapped Source {}", mapperSource.getID() );
+		configuration.addMapper(mapperSource);
+		return mapperSource;
+	}
+	
 	public MappedStatement addMappedStatement(String id, String description, SqlSource sqlSource, StatementType statementType, Integer fetchSize, Integer timeout) {
 		
 		String idToUse = applyCurrentNamespace(id);		

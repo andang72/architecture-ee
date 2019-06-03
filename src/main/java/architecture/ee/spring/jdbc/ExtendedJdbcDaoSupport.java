@@ -29,6 +29,7 @@ import org.springframework.jdbc.support.lob.LobHandler;
 import architecture.ee.jdbc.sqlquery.factory.Configuration;
 import architecture.ee.jdbc.sqlquery.mapping.BoundSql;
 import architecture.ee.jdbc.sqlquery.mapping.MappedStatement;
+import architecture.ee.jdbc.sqlquery.mapping.MapperSource;
 
 public class ExtendedJdbcDaoSupport extends JdbcDaoSupport {
 
@@ -107,6 +108,15 @@ public class ExtendedJdbcDaoSupport extends JdbcDaoSupport {
 		return null;
 	}
 
+	
+	public MapperSource getMapperSource(String name) {
+		MapperSource source = null;
+		if (isSetConfiguration()) {
+			source = sqlConfiguration.getMapper(name); 
+		}
+		return source;
+	}
+	
 	public ExtendedJdbcTemplate getExtendedJdbcTemplate() {
 		return (ExtendedJdbcTemplate) getJdbcTemplate();
 	}

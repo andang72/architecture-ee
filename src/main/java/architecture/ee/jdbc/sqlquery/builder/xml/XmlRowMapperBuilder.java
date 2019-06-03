@@ -22,9 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
 
+import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.jdbc.sqlquery.builder.AbstractBuilder;
 import architecture.ee.jdbc.sqlquery.builder.SqlQueryBuilderAssistant;
 import architecture.ee.jdbc.sqlquery.factory.Configuration;
+import architecture.ee.jdbc.sqlquery.mapping.MapperSource;
 import architecture.ee.jdbc.sqlquery.mapping.ParameterMapping;
 import architecture.ee.jdbc.sqlquery.parser.XNode;
 import architecture.ee.util.StringUtils;
@@ -48,20 +50,27 @@ public class XmlRowMapperBuilder extends AbstractBuilder {
 		this.context = context;
 	}
 
-	public void parseRowMapperNode() {
-
+	public void parseRowMapperNode() { 
+		
 		String idToUse = context.getStringAttribute(XML_ATTR_ID_TAG);
-		String nameToUse = context.getStringAttribute(XML_ATTR_NAME_TAG);
+		String nameToUse = context.getStringAttribute(XML_ATTR_NAME_TAG); 
 		
 		if (StringUtils.isEmpty(idToUse))
-			idToUse = nameToUse;
-
-		String classNameToUse = context.getStringAttribute(XML_ATTR_CLASS_TAG);
-
-		ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
-		ClassLoader loader = contextCL == null ? ClassUtils.class.getClassLoader() : contextCL;
-		Class<?> mappedClass = ClassUtils.resolveClassName(classNameToUse, loader);
-		List<ParameterMapping> parameterMappings = parseParameterMappings(context);
+			idToUse = nameToUse; 
+		
+		String classNameToUse = context.getStringAttribute(XML_ATTR_CLASS_TAG);   
+		Class<?> mappedClass = null;
+		try {
+			ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
+			ClassLoader loader = contextCL == null ? ClassUtils.class.getClassLoader() : contextCL;
+			mappedClass = ClassUtils.resolveClassName(classNameToUse, loader);
+			List<ParameterMapping> parameterMappings  = parseParameterMappings(context); 
+			MapperSource factory = new MapperSource.Builder(mappedClass, parameterMappings).name(nameToUse).build(); 
+			builderAssistant.addMapperSource(factory.getName(), factory);   
+		} catch (IllegalArgumentException e) {
+			log.warn(FrameworkLogLocalizer.format("003045", classNameToUse ), e);
+		}
+ 
 		
 	}
 

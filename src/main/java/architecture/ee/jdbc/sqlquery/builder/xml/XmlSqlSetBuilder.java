@@ -77,6 +77,7 @@ public class XmlSqlSetBuilder extends AbstractBuilder {
 			XNode context = parser.evalNode("/sqlset");
 			configurationElement(context);				
 			buildStatement(context.evalNodes("/sqlset/sql-query"));
+			
 			buildRowMapper(context.evalNodes("/sqlset/row-mapper"));				
 			
 		} catch (Exception e) {

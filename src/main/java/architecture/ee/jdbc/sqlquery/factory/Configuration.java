@@ -16,6 +16,7 @@
 
 package architecture.ee.jdbc.sqlquery.factory;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -26,8 +27,11 @@ import java.util.concurrent.ConcurrentMap;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import architecture.ee.i18n.FrameworkLogLocalizer;
+import architecture.ee.jdbc.sqlquery.MapperNotFountException;
 import architecture.ee.jdbc.sqlquery.SqlNotFoundException;
 import architecture.ee.jdbc.sqlquery.mapping.MappedStatement;
+import architecture.ee.jdbc.sqlquery.mapping.MapperSource;
 import architecture.ee.jdbc.sqlquery.parser.XNode;
 import architecture.ee.jdbc.sqlquery.type.TypeAliasRegistry;
 import architecture.ee.util.StringUtils;
@@ -50,12 +54,14 @@ public class Configuration {
 
 	protected final Set<String> loadedResources = new HashSet<String>();
 
-	// protected final Map<String, MappedStatement> mappedStatements = new
-	// StrictMap<MappedStatement>("Mapped Statements collection");
+	 
+	protected final BiMap<String, MapperSource> mappers = HashBiMap.create();
+
 
 	/**
      * 파싱되어 매핑된 스테이트 객체들이 저장되는 위치. 다중키는 아파치 commons-collections 패키지에서 제공하는
      * MultiKey (namespace + id) 을 사용하여 구현함. 다중키를 스트링 조합으로 변경함.
+     * 저장소는 양방향 키 사용이 가능한 BiMap 를 사용.
      * 
      */
 	protected final BiMap<String, MappedStatement> mappedStatements = HashBiMap.create();
@@ -66,11 +72,21 @@ public class Configuration {
 	/** A map holds statement nodes for a namespace. */
 	protected final ConcurrentMap<String, List<XNode>> statementNodesToParse = new ConcurrentHashMap<String, List<XNode>>();
 
+	protected final ConcurrentMap<String, List<XNode>> mapperNodesToParse = new ConcurrentHashMap<String, List<XNode>>();
+    
 	
 	public void addLoadedResource(String resource) {
 		loadedResources.add(resource);
 	}
 
+	public void addMapperNodes(String namespace, List<XNode> nodes) {
+		mapperNodesToParse.put(namespace, nodes);
+	}
+
+    public void addMapper(MapperSource source) {
+    	mappers.put(source.getID(), source);
+    }
+    
 	public void addMappedStatement(MappedStatement statement) {
 		mappedStatements.put(statement.getId(), statement);
 	}
@@ -103,9 +119,24 @@ public class Configuration {
 		if( !StringUtils.isNullOrEmpty(id) && mappedStatements.containsKey(id) ){
 			return mappedStatements.get(id);
 		}
-		throw new SqlNotFoundException( "" );
+		throw new SqlNotFoundException( FrameworkLogLocalizer.format("003059", id));
 	}
 
+	
+	public List<String> getMapperNames(){
+		List<String> list = new ArrayList<String>();
+		mappers.keySet().addAll(list);
+		return list;
+	}
+    public MapperSource getMapper(String id) {
+		if (!this.mappers.containsKey(id)) {
+			return mappers.get(id);
+		}
+		if (!mappers.containsKey(id))
+			throw new MapperNotFountException(FrameworkLogLocalizer.format("003060", id)); //L10NUtils.format("003281", id));
+		return mappers.get(id);
+    }
+ 
 	public Set<MappedStatement> getMappedStatements() {
 		buildAllStatements();
 		return mappedStatements.values();

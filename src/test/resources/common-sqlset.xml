@@ -63,7 +63,7 @@
 	</sql-query>
 
 
-    <row-mapper name="companyRowMapper" class="architecture.common.user.CompanyTemplate" >		
+    <row-mapper name="companyRowMapper" class="architecture.common.user.DefaultCompany" >		
 		<parameterMapping name="companyId" column="COMPANY_ID" javaType="long" />	
 		<parameterMapping name="displayName" column="DISPLAY_NAME" javaType="string" />	
 		<parameterMapping name="name" column="NAME" javaType="string" />	
