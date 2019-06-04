@@ -37,7 +37,7 @@ public class SqlQueryException extends NestedRuntimeException {
 	/**
 	 * Constructor for DataAccessException.
 	 * @param msg the detail message
-	 * @param cause the root cause (usually from using a underlying
+	 * @param cause the element cause (usually from using a underlying
 	 * data access API such as JDBC)
 	 */
 	public SqlQueryException(String msg, Throwable cause) {

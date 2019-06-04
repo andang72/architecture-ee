@@ -60,13 +60,13 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 		
 		ApplicationProperties config = repository.getSetupApplicationProperties();
 		
-		Collection<String> dataSourceProviders = config.getChildrenNames(profileTag);
+		Collection<String> providers = config.getChildrenNames(profileTag);
 		
 		
 		if(log.isDebugEnabled())
 			log.debug(FrameworkLogLocalizer.format("003040", profileName));		
 	
-		if( dataSourceProviders.size() == 0 ) {
+		if( providers.size() == 0 ) {
 			
 			if( config.getBooleanProperty(ApplicationConstants.SETUP_COMPLETE_PROP_NAME, false))
 			{
@@ -80,7 +80,7 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 			}
 		}
 		
-		for( String dataSourceProvider : dataSourceProviders ){
+		for( String dataSourceProvider : providers ){
 			DataSource dataSourceToUse = null ;
 			String providerTag = profileTag + "." + dataSourceProvider	;	
 			if("jndiDataSourceProvider".equals(dataSourceProvider))

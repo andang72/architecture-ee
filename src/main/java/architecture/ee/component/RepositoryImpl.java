@@ -162,7 +162,7 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 						
 						// view start
 						/*
-						org.dom4j.Element viewNode = root.addElement("view");
+						org.dom4j.Element viewNode = element.addElement("view");
 						org.dom4j.Element renderNode = viewNode.addElement("render");
 						org.dom4j.Element freemarkerNode = renderNode.addElement("freemarker");
 						freemarkerNode.addElement("enabled").setText("true");

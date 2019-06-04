@@ -62,5 +62,8 @@ public class StringUtils extends org.springframework.util.StringUtils {
 		}
 		return str.substring(pos + separator.length());
 	} 
-		 
+	
+	 public static boolean equals(CharSequence cs1, CharSequence cs2) {
+		 return cs1 == null ? cs2 == null : cs1.equals(cs2);
+	 }
 }

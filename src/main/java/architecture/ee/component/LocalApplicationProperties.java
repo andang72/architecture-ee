@@ -32,7 +32,7 @@ import architecture.ee.util.xml.XmlProperties;
  * @author donghyuck
  *
  */
-public class LocalApplicationProperties implements ApplicationProperties {
+public class LocalApplicationProperties implements ApplicationProperties, XmlPropertiesAccessor {
 	
 	public static final ApplicationProperties EMPTY_APPLICATION_PROPERTIES = new EmptyApplicationProperties();	
 	
@@ -65,7 +65,7 @@ public class LocalApplicationProperties implements ApplicationProperties {
 	public LocalApplicationProperties(String fileName) throws IOException {
 		properties = new XmlProperties(fileName);
 	}
-
+	
 	public void clear() {
 		throw new UnsupportedOperationException("Not implemented in local version");
 	}
@@ -235,6 +235,9 @@ public class LocalApplicationProperties implements ApplicationProperties {
 			return Collections.emptyList();
 		}
 
+	} 
+	public XmlProperties getXmlProperties() { 
+		return properties;
 	}
 	
 }

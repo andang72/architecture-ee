@@ -62,9 +62,7 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 
 	@Autowired(required = false)
 	@Qualifier("sqlQueryFactory")
-	private SqlQueryFactory sqlQueryFactory ;
-	
-	
+	private SqlQueryFactory sqlQueryFactory ; 
 	
 	private Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
 
@@ -98,8 +96,7 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 		
 		State oldState = state;
 		state = State.INITIALIZED;
-		fireStateChangeEvent(oldState, state);
-		
+		fireStateChangeEvent(oldState, state); 
 		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService",state.name() ));
 	}
 
