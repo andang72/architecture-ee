@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.SqlParameterValue;
@@ -53,6 +54,8 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 	
 	private EventBus eventBus;
 
+	private ApplicationEventPublisher applicationEventPublisher;	
+	
 	protected final AtomicBoolean initFlag = new AtomicBoolean();
 
 	private boolean localized;
@@ -72,6 +75,10 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 	protected JdbcApplicationProperties(boolean localized, boolean usingExternalSql) {
 		this.localized = localized;
 		this.usingExternalSql = usingExternalSql;
+	} 
+
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	public void setEventBus(EventBus eventBus) {
@@ -191,9 +198,13 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 	}
 
 	private void firePropertyChangeEvent(PropertyChangeEvent.Type eventType, String propertyName, Object oldValue, Object newValue){
-		if( eventBus != null ){
-			PropertyChangeEvent event = new PropertyChangeEvent(this, eventType, propertyName, oldValue, newValue);
+		PropertyChangeEvent event = new PropertyChangeEvent(this, eventType, propertyName, oldValue, newValue);
+		if( eventBus != null ){ 
 			eventBus.post(event);
+		}
+		if (applicationEventPublisher != null ) {
+			//log.debug("fire event : {}", event);
+			applicationEventPublisher.publishEvent(event);
 		}
 	}
 
@@ -225,8 +236,6 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 				insertProperty(key, value);
 				firePropertyChangeEvent(PropertyChangeEvent.Type.ADDED, key, null, value);
 			}
-			// CacheFactory.doClusterTask(new PropertyClusterPutTask(key, value,
-			// localized));
 			s = oldValue;
 		}
 		return s;

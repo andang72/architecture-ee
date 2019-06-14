@@ -42,6 +42,10 @@ public class ComponentImpl implements Component {
 		return eventBus;
 	}
 	
+	protected ApplicationEventPublisher getApplicationEventPublisher() {
+		return applicationEventPublisher;
+	}
+
 	public void publish(Object event) {		
 		if( eventBus != null)
 			eventBus.post(event);
@@ -62,9 +66,11 @@ public class ComponentImpl implements Component {
 	}	
 	
 	protected void fireStateChangeEvent(State oldState, State newState) {
+		
 		StateChangeEvent event = new StateChangeEvent(this, oldState, newState);
 		if( eventBus != null)
 			eventBus.post(event);
+		
 		if( applicationEventPublisher != null )
 			applicationEventPublisher.publishEvent(event);
 		

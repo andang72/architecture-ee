@@ -23,6 +23,8 @@ public interface Repository {
 	 
 	 public abstract File getFile(String name);
 	 
-	 public ApplicationProperties getSetupApplicationProperties();
-
+	 public abstract void refresh() ;
+	 
+	 public abstract ApplicationProperties getSetupApplicationProperties();
+	 
 }

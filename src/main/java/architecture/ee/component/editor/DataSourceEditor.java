@@ -1,5 +1,7 @@
 package architecture.ee.component.editor;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -10,12 +12,18 @@ import org.dom4j.Element;
 import architecture.ee.util.StringUtils; 
  
 
-public class DataSourceEditor {
+public class DataSourceEditor extends AbstractXmlEditor {
 
-	org.dom4j.Element element ;
+	org.dom4j.Element element ; 
 	
-	public DataSourceEditor(org.dom4j.Element root) {
-		this.element = root;
+	public DataSourceEditor(File file) {
+		super(file);
+		initialize();
+	}  
+	
+	protected void initialize() { 
+		Element root = getDocument().getRootElement();
+		this.element = root.element("database");  
 	} 
 	
 	/**
@@ -23,45 +31,60 @@ public class DataSourceEditor {
   	<jndiName></jndiName>
   	</jndiDataSourceProvider>
 	*/
-	public void setJndiDataSource(JndiDataSourceBean bean) { 
+	public void setJndiDataSource(JndiDataSourceConfig bean) { 
 		Element oldElement = getChild(this.element, bean.exportName);
 		if( oldElement != null ) {
 			element.remove(oldElement);
 		}  
 		Element newElement = element.addElement(bean.exportName); 
+		
+		if(!StringUtils.isNullOrEmpty(bean.comment))
+			newElement.addComment(bean.comment);
+		
 		Element jndiDataSourceProvider = newElement.addElement("jndiDataSourceProvider");
 		Element jndiName = jndiDataSourceProvider.addElement("jndiName");
 		jndiName.setText(bean.jndiName); 
 	}
 	
-/**
- 
+	public void removeDataSource(String name) {
+		Element child = getChild(element, name) ;
+		if( child != null ) {
+			element.remove(child);
+		} 
+	}
+
 	/**
-	<pooledDataSourceProvider> 
-    <driverClassName></driverClassName> 
-    <url></url>
-    <username></username>
-    <password></password>
-    <connectionProperties>
-        <initialSize>1</initialSize>
-        <maxActive>8</maxActive>
-        <maxIdle>8</maxIdle>
-        <maxWait>-1</maxWait>
-        <minIdle>0</minIdle>
-        <testOnBorrow>true</testOnBorrow>
-        <testOnReturn>false</testOnReturn>
-        <testWhileIdle>false</testWhileIdle>
-        <validationQuery>select 1 from dual</validationQuery>
-    </connectionProperties>
-</pooledDataSourceProvider>
- * 
- */
-	public void setPooledDataSource(PooledDataSourceBean bean) { 
+	 
+		/**
+		<pooledDataSourceProvider> 
+	    <driverClassName></driverClassName> 
+	    <url></url>
+	    <username></username>
+	    <password></password>
+	    <connectionProperties>
+	        <initialSize>1</initialSize>
+	        <maxActive>8</maxActive>
+	        <maxIdle>8</maxIdle>
+	        <maxWait>-1</maxWait>
+	        <minIdle>0</minIdle>
+	        <testOnBorrow>true</testOnBorrow>
+	        <testOnReturn>false</testOnReturn>
+	        <testWhileIdle>false</testWhileIdle>
+	        <validationQuery>select 1 from dual</validationQuery>
+	    </connectionProperties>
+	</pooledDataSourceProvider>
+	 * 
+	 */
+	public void setPooledDataSource(PooledDataSourceConfig bean) { 
 		Element oldElement = getChild(this.element, bean.exportName);
 		if( oldElement != null ) {
 			element.remove(oldElement);
 		} 
 		Element newElement = element.addElement(bean.exportName); 
+		
+		if(!StringUtils.isNullOrEmpty(bean.comment))
+			newElement.addComment(bean.comment);
+		
 		Element pooledDataSourceProvider = newElement.addElement("pooledDataSourceProvider");
 		pooledDataSourceProvider.addElement("driverClassName").setText(bean.driverClassName);
 		pooledDataSourceProvider.addElement("url").setText(bean.url); 
@@ -91,11 +114,31 @@ public class DataSourceEditor {
 	    }
 		return null;
 	}
+
+	public static PooledDataSourceConfig newPooledDataSourceBean(String exportName) {
+		PooledDataSourceConfig bean = new PooledDataSourceConfig();
+		bean.exportName = exportName;
+		return bean;
+	}
 	
-	public static class JndiDataSourceBean {
-		
+	public static JndiDataSourceConfig newJndiDataSourceBean(String exportName) {
+		JndiDataSourceConfig bean = new JndiDataSourceConfig();
+		bean.exportName = exportName;
+		return bean;
+	} 
+	
+	public static class JndiDataSourceConfig implements Serializable {
+		String comment;
 		String exportName;
 		String jndiName ; 
+		
+		public String getComment() {
+			return comment;
+		}
+
+		public void setComment(String comment) {
+			this.comment = comment;
+		}
 		
 		public String getExportName() {
 			return exportName;
@@ -111,9 +154,11 @@ public class DataSourceEditor {
 		public void setJndiName(String jndiName) {
 			this.jndiName = jndiName;
 		} 
-	}
+	} 
 	
-	public static class PooledDataSourceBean {
+	public static class PooledDataSourceConfig implements Serializable {
+		
+		String comment;
 		
 		String exportName;
 		
@@ -125,8 +170,16 @@ public class DataSourceEditor {
 		
 		String password;
 		
-		Map<String, String> connectionProperties = new HashMap<String, String>();
- 
+		Map<String, String> connectionProperties = new HashMap<String, String>(); 
+		
+		public String getComment() {
+			return comment;
+		}
+
+		public void setComment(String comment) {
+			this.comment = comment;
+		}
+
 		public String getExportName() {
 			return exportName;
 		}

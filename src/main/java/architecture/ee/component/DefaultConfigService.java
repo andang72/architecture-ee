@@ -1,18 +1,3 @@
-/**
- *    Copyright 2015-2017 donghyuck
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
 package architecture.ee.component;
 
 import java.io.File;
@@ -32,10 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import architecture.ee.component.event.StateChangeEvent;
 import architecture.ee.exception.ConfigurationError;
 import architecture.ee.i18n.CommonLogLocalizer;
 import architecture.ee.i18n.FrameworkLogLocalizer;
@@ -50,8 +37,11 @@ import architecture.ee.util.LocaleUtils;
 import architecture.ee.util.NumberUtils;
 import architecture.ee.util.StringUtils;
 
-public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
-
+public class DefaultConfigService implements ConfigService {
+	
+	@Autowired(required = false)
+	private ApplicationEventPublisher applicationEventPublisher;	
+	
 	@Autowired(required = true)
 	@Qualifier("repository")
 	private Repository repository;
@@ -78,18 +68,30 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 
     private String characterEncoding = null;
     
+	public DefaultConfigService() { 
+	}
+	
+	
+	public boolean isSetDataSource() {
+		boolean isSetDataSource = dataSource != null ? true : false ;
+		if( isSetDataSource ) {
+			if (dataSource instanceof architecture.ee.jdbc.datasource.FailSafeDummyDataSource ) {
+				isSetDataSource = false;
+			} 
+		} 
+		return isSetDataSource;
+	}
+	
 	public void initialize() {		
 		state = State.INITIALIZING;
 		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService", state.name() ));
-		boolean isSetDataSource = dataSource != null ? true : false ;
 		
 		if(logger.isInfoEnabled()) {
-			logger.info(FrameworkLogLocalizer.format("002002",  "database", isSetDataSource  ? "true" : "false" ));
+			logger.info(FrameworkLogLocalizer.format("002002",  "database", isSetDataSource()  ? "true" : "false" ));
 			logger.info(FrameworkLogLocalizer.format("002002",  "persistence", isConfigPersistenceJdbcEnabled() ? "database":"xml" ));
 			logger.info(FrameworkLogLocalizer.format("002002",  "external sql", isUsingExternalSql() ? "true":"false" ));
-		}
-			
-		if( isSetDataSource )
+		} 
+		if( isSetDataSource() )
 		{
 			getApplicationProperties();
 		}		
@@ -120,6 +122,12 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 			DataSource dataSourceToUse = this.dataSource;
 			// 데이터베이스 설정이 완료되지 않았다면 널을 리턴한다.
 			if (dataSourceToUse != null) {
+				
+				if ( !isSetDataSource() ) {
+					logger.debug( "DataSource not configed.");
+					return null ;
+				} 
+				
 				if(logger.isDebugEnabled()) {
 					logger.debug(FrameworkLogLocalizer.getMessage("003014"));					
 				}
@@ -128,9 +136,10 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 					if(!StringUtils.isNullOrEmpty( getExternalSqlFilepathIfExist() )) {
 						buildExternalSql(getExternalSqlFilepathIfExist());
 					} 
+					
 					JdbcApplicationProperties impl = new JdbcApplicationProperties(localized, isUsingExternalSql());
 					impl.setSqlConfiguration(sqlQueryFactory.getConfiguration());
-					impl.setEventBus(getEventBus());
+					impl.setApplicationEventPublisher(applicationEventPublisher);
 					impl.setDataSource(dataSourceToUse);
 					impl.afterPropertiesSet(); 
 					if(logger.isDebugEnabled())
@@ -386,21 +395,11 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 	public void deleteApplicationProperty(String name) {
 		getApplicationProperties().remove(name);
 	}
-
-	public void registerEventListener(Object listener) {
-		if( getEventBus() != null)
-			getEventBus().register(listener);
+	
+	protected void fireStateChangeEvent(State oldState, State newState) {
+		StateChangeEvent event = new StateChangeEvent(this, oldState, newState);
+ 
+		if( applicationEventPublisher != null )
+			applicationEventPublisher.publishEvent(event);
 	}
-
-	public void unregisterEventListener(Object listener) {
-		if( getEventBus() != null)
-			getEventBus().unregister(listener);
-	}
-
-	@Override
-	public boolean isSetDataSource() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

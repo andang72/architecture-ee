@@ -26,7 +26,7 @@ import java.util.TimeZone;
  * @author donghyuck
  *
  */
-public interface ConfigService extends EventTarget {
+public interface ConfigService {
 	
 	public boolean isSetupComplete();
 	
@@ -42,6 +42,7 @@ public interface ConfigService extends EventTarget {
 	
 	public void setTimeZone(TimeZone newTimeZone);
 	
+	public boolean isSetDataSource();
 	
 	/**
 	 * startup-config.xml 파일에 저장된 프로퍼티 값을 리턴한다.

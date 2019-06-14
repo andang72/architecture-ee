@@ -27,6 +27,7 @@
 		<beans:property name="freemarkerSettings">
 			<beans:props>
 				<beans:prop key="auto_import">/spring.ftl as spring</beans:prop>
+				<beans:prop key="template_exception_handler">rethrow</beans:prop>
 			</beans:props>
 		</beans:property>
 	</beans:bean>

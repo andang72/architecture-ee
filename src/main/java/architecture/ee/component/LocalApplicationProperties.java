@@ -32,7 +32,7 @@ import architecture.ee.util.xml.XmlProperties;
  * @author donghyuck
  *
  */
-public class LocalApplicationProperties implements ApplicationProperties, XmlPropertiesAccessor {
+public class LocalApplicationProperties implements ApplicationProperties {
 	
 	public static final ApplicationProperties EMPTY_APPLICATION_PROPERTIES = new EmptyApplicationProperties();	
 	
@@ -235,9 +235,6 @@ public class LocalApplicationProperties implements ApplicationProperties, XmlPro
 			return Collections.emptyList();
 		}
 
-	} 
-	public XmlProperties getXmlProperties() { 
-		return properties;
 	}
 	
 }

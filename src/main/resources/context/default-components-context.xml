@@ -29,7 +29,7 @@
                
      <beans:bean id="dataSource" class="architecture.ee.spring.jdbc.datasource.DataSourceFactoryBean" p:profileName="default" lazy-init="true"/>
      
-     <beans:bean id="configService" class="architecture.ee.component.ConfigServiceImpl" init-method="initialize" />
+     <beans:bean id="configService" class="architecture.ee.component.DefaultConfigService" init-method="initialize" />
                
      <beans:bean id="sqlQueryFactory" class="architecture.ee.jdbc.sqlquery.factory.SqlQueryFactoryBuilder" init-method="initialize" factory-method="build" >
      	<beans:property name="resourceLocations">

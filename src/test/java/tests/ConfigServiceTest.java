@@ -46,17 +46,7 @@ public class ConfigServiceTest {
 	@Autowired
     private ConfigService configService;
 	
-	
-	@Before
-    public void runBeforeTestMethod() {
-		configService.registerEventListener(this);
-    }
-	
-	@After
-    public void runAfterTestMethod() {
-		configService.unregisterEventListener(this);
-    }
-	
+	 
 	@Test
 	public void testGetProperty(){
 		String name = "setup.complete";
@@ -99,21 +89,7 @@ public class ConfigServiceTest {
 		
 	}
 
-	@Test
-	public void testJdbcSetGetProperty(){
-		configService.registerEventListener(new PropertyChangeEventListener());	
-		
-		log.debug("setup completed :" + configService.isSetupComplete());
-		
-		if( configService.getApplicationProperty("welcome.message", null) != null )
-			configService.deleteApplicationProperty("welcome.message");
-		
-		if( configService.getApplicationProperty("welcome.message", null) == null )
-			configService.setApplicationProperty("welcome.message", "안녕하신가요 !!");
-		
-		log.debug( "LOCALE {}, TIMEZONE {}, ENCODING {}" , configService.getLocale().getDisplayName(), configService.getTimeZone().getDisplayName() , configService.getCharacterEncoding());
-	}
-	
+ 
 	class PropertyChangeEventListener { 
 		@Subscribe 
 		public void handel(PropertyChangeEvent e) {

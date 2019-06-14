@@ -23,7 +23,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -38,11 +40,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.ServletContextResource;
 
+import architecture.ee.component.event.PropertiesRefreshedEvent;
 import architecture.ee.component.event.StateChangeEvent;
 import architecture.ee.i18n.CommonLogLocalizer;
 import architecture.ee.i18n.FrameworkLogLocalizer;
@@ -81,18 +86,35 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 		printLogo ();
 	}
 
-	public void printLogo () { 
-		
+	public void printLogo () {  
 		try { 
-				InputStream in = getClass().getResourceAsStream(LOGO); 
+			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			Enumeration<URL> resources = cl.getResources(LOGO); 
+			while( resources.hasMoreElements() ) {
+				URL url = resources.nextElement();
+				InputStream in = null;
+				try {
+		            in = url != null ? url.openStream() : null;
+		        } catch (IOException ignore ) { }
 				if( in != null) {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 					String str = IOUtils.toString(in, Charsets.toCharset(ApplicationConstants.DEFAULT_CHAR_ENCODING)); 
 					System.out.println( str ); 
-				}
-				String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
-				String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.1-RELEASE");  
-				System.out.println( String.format("  %s : %s", title, version ) );
+				} 
+			}
+			String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
+			String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.1-RELEASE");  
+			System.out.println( String.format("  %s : %s", title, version ) );
+			
+//				InputStream in = getClass().getResourceAsStream(LOGO); 
+//				if( in != null) {
+//					BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//					String str = IOUtils.toString(in, Charsets.toCharset(ApplicationConstants.DEFAULT_CHAR_ENCODING)); 
+//					System.out.println( str ); 
+//				}
+//				String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
+//				String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.1-RELEASE");  
+//				System.out.println( String.format("  %s : %s", title, version ) );
 		} catch (IOException e) {
 			log.warn("WOOPS", e);
 		}
@@ -125,10 +147,19 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 		return null;
 	}
 
+	public void refresh() {
+		getSetupApplicationProperties(true);
+	}
+	
+	public ApplicationProperties getSetupApplicationProperties(boolean refresh) {
+		if( refresh )
+			setupProperties = null;
+		return getSetupApplicationProperties();
+	}
+	
 	public ApplicationProperties getSetupApplicationProperties() {
 		if (setupProperties == null) {
-			if(initailized.get()){
-				
+			if(initailized.get()){ 
 				File file = getFile(ApplicationConstants.DEFAULT_STARTUP_FILENAME);						
 						
 				if (!file.exists()){					
@@ -201,13 +232,13 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 						root.addComment("DATABASE SETTING");
 						org.dom4j.Element databaseNode = root.addElement("database");
 						org.dom4j.Element databaseDefaultNode = databaseNode.addElement("default");
-						databaseDefaultNode.addComment(" 1. jndi datasource ");
+						databaseDefaultNode.addComment(" 1. jndi datasource example.");
 						databaseDefaultNode.addComment((new StringBuilder()).append("\n")
 						.append("      ").append("<jndiDataSourceProvider>").append("\n")
 						.append("      ").append("	<jndiName></jndiName>").append("\n")
 						.append("      ").append("</jndiDataSourceProvider>").append("\n")
 						.toString()); 
-						databaseDefaultNode.addComment(" 2. connection pool datasource using dbcp ");
+						databaseDefaultNode.addComment(" 2. connection pool datasource using dbcp example. ");
 						databaseDefaultNode.addComment((
 						new StringBuilder()).append("\n")
 						.append("      ").append("<pooledDataSourceProvider> ").append("\n")
@@ -290,17 +321,21 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 			} catch (IOException e) {
 				log.error(CommonLogLocalizer.getMessage("003008"), e);
 			}	
-			log.info(FrameworkLogLocalizer.format("002001", "Repository", State.INITIALIZED.name() ));	
-			
+			log.info(FrameworkLogLocalizer.format("002001", "Repository", State.INITIALIZED.name() ));	 
 			fireStateChangeEvent( State.INITIALIZING, State.INITIALIZED);
 		}
 	}
 
 	protected void fireStateChangeEvent(State oldState, State newState) {
-		StateChangeEvent event = new StateChangeEvent(this, oldState, newState);
- 
+		StateChangeEvent event = new StateChangeEvent(this, oldState, newState); 
 		if( applicationEventPublisher != null )
 			applicationEventPublisher.publishEvent(event);
-		
+	}
+	
+	
+	@EventListener(condition = "#event.name eq 'startup'")
+	public void handlePropertiesRefreshedEvent(PropertiesRefreshedEvent event) { 
+		log.info(FrameworkLogLocalizer.format("002016", event.getSource()));
+		this.refresh();
 	}
 }
