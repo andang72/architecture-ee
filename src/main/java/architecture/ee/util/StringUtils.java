@@ -15,16 +15,28 @@
  */
 package architecture.ee.util;
 
+import java.net.IDN;
+import java.text.MessageFormat;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import architecture.ee.component.VariableMapImpl;
 import architecture.ee.service.VariableMap;
 
 public class StringUtils extends org.springframework.util.StringUtils {
 
+	private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
+	
 	public static final int INDEX_NOT_FOUND = -1;
 	public static final String EMPTY = "";
-	
+    
+	// Constants used by escapeHTMLTags
+    private static final char[] QUOTE_ENCODE = "&quot;".toCharArray();
+    private static final char[] AMP_ENCODE = "&amp;".toCharArray();
+    private static final char[] LT_ENCODE = "&lt;".toCharArray();
+    private static final char[] GT_ENCODE = "&gt;".toCharArray();
+    
 	public static String defaultString(final String str, final String defaultStr) {
 		return str == null ? defaultStr : str;
 	}
@@ -37,7 +49,7 @@ public class StringUtils extends org.springframework.util.StringUtils {
 	public static boolean isNullOrEmpty(String str) {
 		return com.google.common.base.Strings.isNullOrEmpty(str);
 	}
-	
+
 	public static String substringBeforeLast(final String str, final String separator) {
 		if (isEmpty(str) || isEmpty(separator)) {
 			return str;
@@ -48,8 +60,8 @@ public class StringUtils extends org.springframework.util.StringUtils {
 		}
 		return str.substring(0, pos);
 	}
-	
-	 public static String substringAfterLast(final String str, final String separator) {
+
+	public static String substringAfterLast(final String str, final String separator) {
 		if (isEmpty(str)) {
 			return str;
 		}
@@ -61,9 +73,152 @@ public class StringUtils extends org.springframework.util.StringUtils {
 			return EMPTY;
 		}
 		return str.substring(pos + separator.length());
-	} 
-	
-	 public static boolean equals(CharSequence cs1, CharSequence cs2) {
-		 return cs1 == null ? cs2 == null : cs1.equals(cs2);
-	 }
+	}
+
+	public static boolean equals(CharSequence cs1, CharSequence cs2) {
+		return cs1 == null ? cs2 == null : cs1.equals(cs2);
+	}
+	/**
+     * This method takes a string which may contain HTML tags (ie, &lt;b&gt;,
+     * &lt;table&gt;, etc) and converts the '&lt;' and '&gt;' characters to
+     * their HTML escape sequences. It will also replace LF  with &lt;br&gt;.
+     *
+     * @param in the text to be converted.
+     * @return the input string with the characters '&lt;' and '&gt;' replaced
+     *         with their HTML escape sequences.
+     */
+    public static String escapeHTMLTags(String in) {
+        return escapeHTMLTags(in, true);
+    }
+
+
+    /**
+     * This method takes a string which may contain HTML tags (ie, &lt;b&gt;,
+     * &lt;table&gt;, etc) and converts the '&lt;' and '&gt;' characters to
+     * their HTML escape sequences.
+     *
+     * @param in the text to be converted.
+     * @param includeLF set to true to replace \n with <br>.
+     * @return the input string with the characters '&lt;' and '&gt;' replaced
+     *         with their HTML escape sequences.
+     */
+    public static String escapeHTMLTags(String in, boolean includeLF) {
+        if (in == null) {
+            return null;
+        }
+        char ch;
+        int i = 0;
+        int last = 0;
+        char[] input = in.toCharArray();
+        int len = input.length;
+        StringBuilder out = new StringBuilder((int)(len * 1.3));
+        for (; i < len; i++) {
+            ch = input[i];
+            if (ch > '>') {
+            }
+            else if (ch == '<') {
+                if (i > last) {
+                    out.append(input, last, i - last);
+                }
+                last = i + 1;
+                out.append(LT_ENCODE);
+            }
+            else if (ch == '>') {
+                if (i > last) {
+                    out.append(input, last, i - last);
+                }
+                last = i + 1;
+                out.append(GT_ENCODE);
+            }
+            else if (ch == '\n' && includeLF == true) {
+                if (i > last) {
+                    out.append(input, last, i - last);
+                }
+                last = i + 1;
+                out.append("<br>");
+            }
+        }
+        if (last == 0) {
+            return in;
+        }
+        if (i > last) {
+            out.append(input, last, i - last);
+        }
+        return out.toString();
+    }
+	/**
+	 * Abbreviates a string to a specified length and then adds an ellipsis if the
+	 * input is greater than the maxWidth. Example input:
+	 * 
+	 * <pre>
+	 *      user1@demo.com/home
+	 * </pre>
+	 * 
+	 * and a maximum length of 20 characters, the abbreviate method will return:
+	 * 
+	 * <pre>
+	 *      user1@demo.c...
+	 * </pre>
+	 * 
+	 * @param str
+	 *            the String to abbreviate.
+	 * @param maxWidth
+	 *            the maximum size of the string, minus the ellipsis.
+	 * @return the abbreviated String, or {@code null} if the string was
+	 *         {@code null}.
+	 */
+	public static String abbreviate(String str, int maxWidth) {
+		if (null == str) {
+			return null;
+		}
+
+		if (str.length() <= maxWidth) {
+			return str;
+		}
+
+		return str.substring(0, maxWidth) + "...";
+	}
+
+	/**
+     * Returns a valid domain name, possibly as an ACE-encoded IDN 
+     * (per <a href="http://www.ietf.org/rfc/rfc3490.txt">RFC 3490</a>).
+     * 
+     * @param domain Proposed domain name
+     * @return The validated domain name, possibly ACE-encoded
+     * @throws IllegalArgumentException The given domain name is not valid
+     */
+    public static String validateDomainName(String domain) {
+        if (domain == null || domain.trim().length() == 0) {
+            throw new IllegalArgumentException("Domain name cannot be null or empty");
+        }
+        String result = IDN.toASCII(domain);
+        if (result.equals(domain)) {
+            // no conversion; validate again via USE_STD3_ASCII_RULES
+            IDN.toASCII(domain, IDN.USE_STD3_ASCII_RULES);
+        } else {
+            log.info(MessageFormat.format("Converted domain name: from '{0}' to '{1}'",  domain, result));
+        }
+        return result;
+    }
+    
+	/**
+	 * Removes characters likely to enable Cross Site Scripting attacks from the
+	 * provided input string. The characters that are removed from the input string,
+	 * if present, are:
+	 * 
+	 * <pre>
+	 * &lt; &gt; &quot; ' % ; ) ( &amp; + -
+	 * </pre>
+	 * 
+	 * @param input
+	 *            the string to be scrubbed
+	 * @return Input without certain characters;
+	 */
+	public static String removeXSSCharacters(String input) {
+		final String[] xss = { "<", ">", "\"", "'", "%", ";", ")", "(", "&", "+", "-" };
+		for (int i = 0; i < xss.length; i++) {
+			input = input.replace(xss[i], "");
+		}
+		return input;
+	}
 }

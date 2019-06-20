@@ -33,7 +33,10 @@ public class ConfigRootImpl implements ConfigRoot {
 
 	public File getFile(String name) {
 		try {
-			return getRootResource().createRelative(name).getFile();
+			//return getRootResource().createRelative(name).getFile();
+			
+			File file = new File( getRootResource().getFile() , name );
+			return file;
 		} catch (IOException e) {
 		}
 		return null;
