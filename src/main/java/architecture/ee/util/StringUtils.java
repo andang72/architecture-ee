@@ -17,7 +17,10 @@ package architecture.ee.util;
 
 import java.net.IDN;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -221,4 +224,66 @@ public class StringUtils extends org.springframework.util.StringUtils {
 		}
 		return input;
 	}
+	
+	 /**
+     * Returns an array of stringtokens from the source string.
+     * The String "Leon Power Tools" with delimiter ' ' will return {"Leon","Power","Tools"}
+     * Last change:  LR   15 Aug 98    4:23 pm
+     *
+     * @param source a {@link java.lang.String} object.
+     * @param delimiter a char.
+     * @return an array of {@link java.lang.String} objects.
+     */
+    public static final String[] tokenize(String source, char delimiter) {
+        List<String> v = tokenize2vector(source, delimiter);
+        String[] ret = new String[v.size()];
+        for (int i = 0; i < v.size(); i++) {
+            ret[i] = v.get(i);
+        }
+        return ret;
+    }/*end fun tokenize()*/	
+    
+    /**
+    * Return a Vector with tokens from the source string tokenized using the delimiter char.
+    *
+    * @param source a {@link java.lang.String} object.
+    * @param delimiter a char.
+    * @return a {@link java.util.List} object.
+    */
+   public static List<String> tokenize2vector(String source, char delimiter) {
+       List<String> v = new ArrayList<>();
+       StringBuilder currentS = new StringBuilder(source.length());
+       for (int i = 0; i < source.length(); i++) {
+           char c = source.charAt(i);
+           if (c == delimiter) {
+               if (currentS.length() > 0) {
+                   v.add(currentS.toString());
+               } else {
+                   v.add("");
+               }
+               currentS = new StringBuilder();
+           } else {
+               currentS.append(c);
+           }
+       }
+       if (currentS != null && currentS.length() > 0)
+           v.add(currentS.toString());
+       return v;
+   }
+    
+   /**
+    * Returns a source String with all occurences of 'c' removed.
+    * removeChar("Leon's Power Tools", ' ') will return "Leon'sPowerTools".
+    *
+    * @param src a {@link java.lang.String} object.
+    * @param c a char.
+    * @return a {@link java.lang.String} object.
+    */
+   public static String removeChar(String src, char c) {
+       StringBuilder ret = new StringBuilder(src.length());
+       for (int i = 0; i < src.length(); i++)
+           if (src.charAt(i) != c)
+               ret.append(src.charAt(i));
+       return ret.toString();
+   }   
 }

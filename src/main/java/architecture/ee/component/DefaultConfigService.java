@@ -191,9 +191,14 @@ public class DefaultConfigService implements ConfigService {
 		return getLocalProperty(ApplicationConstants.SERVICES_CONFIG_PERSISTENCE_JDBC_EXTERNAL_SQL_FILEPATH, null);
 	}
 	
-	
+	/**
+     * Returns the global Locale used by System. A locale specifies language
+     * and country codes, and is used for internationalization. The default
+     * locale is system dependent - Locale.getDefault().
+     *
+     * @return the global locale used by System.
+     */
 	public Locale getLocale() {
-
 		if (this.locale == null) {
 			Locale localeToUse = Locale.getDefault();
 			String languageToUse = getLocalProperty(ApplicationConstants.LOCALE_LANGUAGE_PROP_NAME, null);
@@ -205,19 +210,18 @@ public class DefaultConfigService implements ConfigService {
 					localeToUse = new Locale(languageToUse, countryToUse, "");
 				}
 			}
-
 			languageToUse = (String) getApplicationProperties().get(ApplicationConstants.LOCALE_LANGUAGE_PROP_NAME);
 			countryToUse = (String) getApplicationProperties().get(ApplicationConstants.LOCALE_COUNTRY_PROP_NAME);
-
 			if (!StringUtils.isEmpty(languageToUse)) {
 				if (StringUtils.isEmpty(countryToUse)) {
-					localeToUse = new Locale(languageToUse, null, null);
+					localeToUse = new Locale(languageToUse, "", "");
 				} else {
-					localeToUse = new Locale(languageToUse, countryToUse, null);
+					localeToUse = new Locale(languageToUse, countryToUse, "");
 				}
 			}
 			this.locale = localeToUse;
 		}
+		
 		return locale;
 	}
 	
@@ -231,6 +235,7 @@ public class DefaultConfigService implements ConfigService {
 		String language = newLocale.getLanguage();
 		setApplicationProperty(ApplicationConstants.LOCALE_COUNTRY_PROP_NAME, country);
 		setApplicationProperty(ApplicationConstants.LOCALE_LANGUAGE_PROP_NAME, language);
+		this.locale = newLocale;
 	}
 
 	/**
@@ -286,6 +291,7 @@ public class DefaultConfigService implements ConfigService {
 	public void setTimeZone(TimeZone newTimeZone) {
 		String timeZoneId = newTimeZone.getID();
 		setApplicationProperty(ApplicationConstants.LOCALE_TIMEZONE_PROP_NAME, timeZoneId);
+		this.timeZone = newTimeZone;
 	}
 	
 	public String getLocalProperty(String name) {
