@@ -84,13 +84,14 @@ public class XmlStatementBuilder extends AbstractBuilder {
 			} else {
 				if (XML_ATTR_DYNAMIC_TAG.equals(nodeName)) {
 					String data = child.getStringBody("");
+					
 					contents.add(new DynamicSqlNode(data));
 				}
 			}
 		}
 		return contents;
 	}
-
+	
 	private List<ParameterMapping> parseParameterMappings(XNode node) {
 		List<ParameterMapping> parameterMappings = new ArrayList<ParameterMapping>();
 		List<XNode> children = node.evalNodes("parameter-mappings/parameter");

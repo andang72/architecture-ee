@@ -15,16 +15,28 @@
  */
 package architecture.ee.spring.event;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 
 import com.google.common.eventbus.EventBus;
 
-public abstract class EventSupport {
+public abstract class EventSupport implements ApplicationEventPublisherAware {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(EventSupport.class);
 	
 	@Autowired(required = false)
 	@Qualifier("eventBus")
 	private EventBus eventBus;
+
+	private ApplicationEventPublisher applicationEventPublisher;	
+
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 	
 	protected void registerEventListener(Object listener) {
 		if( eventBus != null)
@@ -36,9 +48,18 @@ public abstract class EventSupport {
 			eventBus.unregister(listener);
 	}
 	
-	protected void fireEvent(Object event){		
-		if( eventBus != null ){
+	protected void fireEvent(Object event){		 
+		
+		LOG.debug("EVENT:" + event.getClass().getName());
+		
+		if( eventBus != null ){ 
+			LOG.debug("GOOGLE EVENT ENABLED");
 			eventBus.post(event);
+		} 
+		if( applicationEventPublisher != null ) {
+			LOG.debug("SPRING EVENT ENABLED");
+			applicationEventPublisher.publishEvent(event);
 		}
 	}
+
 }

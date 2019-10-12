@@ -127,7 +127,9 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		return bean;
 	} 
 	
-	public static class JndiDataSourceConfig implements Serializable {
+	@SuppressWarnings("serial")
+	public static class JndiDataSourceConfig implements DataSourceConfig {
+		
 		String comment;
 		String exportName;
 		String jndiName ; 
@@ -154,14 +156,17 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		public void setJndiName(String jndiName) {
 			this.jndiName = jndiName;
 		} 
+		
+		public Types getType() {
+			return Types.JNDI;
+		}
 	} 
 	
-	public static class PooledDataSourceConfig implements Serializable {
+	@SuppressWarnings("serial")
+	public static class PooledDataSourceConfig implements DataSourceConfig {
 		
-		String comment;
-		
-		String exportName;
-		
+		String comment; 
+		String exportName; 
 		String driverClassName ;
 		
 		String url;
@@ -230,6 +235,10 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		
 		public void setConnectionProperties(String key, String value) {
 			this.connectionProperties.put(key, value);
+		}
+ 
+		public Types getType() {
+			return Types.POOLED;
 		}
 	}
 }

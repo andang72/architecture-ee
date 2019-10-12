@@ -15,7 +15,7 @@
  */
 package architecture.ee.jdbc.datasource;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -24,12 +24,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MethodInvoker;
 
 import architecture.ee.component.State;
-import architecture.ee.exception.RuntimeError; 
+import architecture.ee.component.editor.DataSourceConfig;
+import architecture.ee.component.editor.DataSourceConfigReader;
+import architecture.ee.component.editor.DataSourceEditor.JndiDataSourceConfig;
+import architecture.ee.component.editor.DataSourceEditor.PooledDataSourceConfig;
+import architecture.ee.exception.RuntimeError;
 import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.service.ApplicationProperties;
 import architecture.ee.service.Repository;
@@ -56,16 +59,51 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 	
 	public DataSource getDataSource() {		
 		
-		String profileTag = "database." + profileName ;		
-		
-		ApplicationProperties config = repository.getSetupApplicationProperties();
-		
-		Collection<String> providers = config.getChildrenNames(profileTag);
-		
-		
+		ApplicationProperties config = repository.getSetupApplicationProperties(); 
 		if(log.isDebugEnabled())
 			log.debug(FrameworkLogLocalizer.format("003040", profileName));		
-	
+		DataSourceConfigReader reader = new DataSourceConfigReader( config ); 
+		if( !reader.hasDataSourceConfig(profileName) ) {
+			if( config.getBooleanProperty(ApplicationConstants.SETUP_COMPLETE_PROP_NAME, false))
+			{
+				throw new RuntimeError(FrameworkLogLocalizer.format("003041", profileName));
+			}
+			if( log.isWarnEnabled()) {
+				log.warn(FrameworkLogLocalizer.format("003041", profileName));
+				log.warn(FrameworkLogLocalizer.format("003019", profileName));
+				
+				return new FailSafeDummyDataSource();
+			}
+		}
+		DataSourceConfig dataSourceConfig = reader.getDataSoruceConfig(profileName);
+		if( dataSourceConfig.getType() ==  DataSourceConfig.Types.JNDI )
+		{
+			JndiDataSourceLookup lookup = new JndiDataSourceLookup();
+			return lookup.getDataSource(((JndiDataSourceConfig)dataSourceConfig).getJndiName());
+		}
+		else if (dataSourceConfig.getType() ==  DataSourceConfig.Types.POOLED) {
+			
+			DataSource dataSourceToUse = null ;
+			log.debug(FrameworkLogLocalizer.format("002003", "DataSource", State.CREATING.name()));
+		    if(log.isDebugEnabled()) {
+		    	log.debug(FrameworkLogLocalizer.format("003043", ((PooledDataSourceConfig)dataSourceConfig).getDriverClassName(), ((PooledDataSourceConfig)dataSourceConfig).getUrl()));
+		    }
+		    if( dataSourceToUse == null && ClassUtils.isPresent(DBCP2_CALSSNAME, null) ) {
+	    		dataSourceToUse = newDbcpDataSource( DBCP2_CALSSNAME, (PooledDataSourceConfig)dataSourceConfig);
+	    	}else			    		
+	    	if( dataSourceToUse == null && ClassUtils.isPresent(DBCP_CALSSNAME, null) ) {
+	    		dataSourceToUse = newDbcpDataSource( DBCP_CALSSNAME, (PooledDataSourceConfig)dataSourceConfig);
+	    	}		    		
+	    	log.debug(FrameworkLogLocalizer.format("002003", "DataSource",  State.CREATED.name()));		    		
+	    	return dataSourceToUse;	 
+		}
+		    
+		/*
+		 * 
+		 * 
+		String profileTag = "database." + profileName ;		
+		 * Collection<String> providers = reader.getProviderNames(profileTag); //config.getChildrenNames(profileTag);
+		
 		if( providers.size() == 0 ) {
 			
 			if( config.getBooleanProperty(ApplicationConstants.SETUP_COMPLETE_PROP_NAME, false))
@@ -78,7 +116,8 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 				
 				return new FailSafeDummyDataSource();
 			}
-		}
+		} 
+		
 		
 		for( String dataSourceProvider : providers ){
 			DataSource dataSourceToUse = null ;
@@ -113,9 +152,51 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 		    		return dataSourceToUse;
 			}
 		}		
+		*/
 		return null;
 	}
 	
+	private DataSource newDbcpDataSource(String className, PooledDataSourceConfig dataSourceConfig ) {
+		DataSource dataSourceToUse = null;
+		try { 
+			if(log.isErrorEnabled())
+				log.debug( FrameworkLogLocalizer.format("003010", className ));
+			
+			Class targetClass = ClassUtils.resolveClassName(className, null);
+			Object targetObject = targetClass.getConstructor().newInstance(); 
+			MethodInvoker invoker = new MethodInvoker();
+			invoker.setTargetObject(targetObject);
+			invoker.setTargetMethod("setDriverClassName");
+			invoker.setArguments(new Object[] { dataSourceConfig.getDriverClassName() });
+			invoker.prepare();
+			invoker.invoke();
+
+			invoker.setTargetMethod("setUrl");
+			invoker.setArguments(new Object[] { dataSourceConfig.getUrl() });
+			invoker.prepare();
+			invoker.invoke();
+
+			invoker.setTargetMethod("setUsername");
+			invoker.setArguments(new Object[] { dataSourceConfig.getUsername() });
+			invoker.prepare();
+			invoker.invoke();
+
+			invoker.setTargetMethod("setPassword");
+			invoker.setArguments(new Object[] { dataSourceConfig.getPassword() });
+			invoker.prepare();
+			invoker.invoke();
+			
+			Map<String, String> properties = dataSourceConfig.getConnectionProperties();
+		    for( String key : properties.keySet()) {
+		    	invoker.setTargetMethod("addConnectionProperty");
+				invoker.setArguments(new Object[] { key, properties.get(key)});
+				invoker.prepare();
+				invoker.invoke();
+		    }
+		    dataSourceToUse = (DataSource) targetObject;
+		} catch (Exception e) { }
+		return dataSourceToUse;
+	}
 	
 	private DataSource newDbcpDataSource(String providerTag, ApplicationProperties config, String className, String driverClassName, String url, String username, String password) {
 		DataSource dataSourceToUse = null;

@@ -17,8 +17,10 @@
 package architecture.ee.jdbc.sqlquery.factory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +32,7 @@ import com.google.common.collect.HashBiMap;
 import architecture.ee.i18n.FrameworkLogLocalizer;
 import architecture.ee.jdbc.sqlquery.MapperNotFountException;
 import architecture.ee.jdbc.sqlquery.SqlNotFoundException;
+import architecture.ee.jdbc.sqlquery.factory.impl.StaticModels;
 import architecture.ee.jdbc.sqlquery.mapping.MappedStatement;
 import architecture.ee.jdbc.sqlquery.mapping.MapperSource;
 import architecture.ee.jdbc.sqlquery.parser.XNode;
@@ -43,9 +46,8 @@ public class Configuration {
 	
 	private String prefix = "";
 
-    private String suffix = DEFAULT_FILE_SUFFIX;
+    private String suffix = DEFAULT_FILE_SUFFIX; 
     
-	
 	protected Integer defaultStatementTimeout;
 
 	protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
@@ -53,11 +55,10 @@ public class Configuration {
 	protected Properties variables = new Properties();
 
 	protected final Set<String> loadedResources = new HashSet<String>();
-
 	 
 	protected final BiMap<String, MapperSource> mappers = HashBiMap.create();
-
-
+	
+	 
 	/**
      * 파싱되어 매핑된 스테이트 객체들이 저장되는 위치. 다중키는 아파치 commons-collections 패키지에서 제공하는
      * MultiKey (namespace + id) 을 사용하여 구현함. 다중키를 스트링 조합으로 변경함.
@@ -122,7 +123,6 @@ public class Configuration {
 		throw new SqlNotFoundException( FrameworkLogLocalizer.format("003059", id));
 	}
 
-	
 	public List<String> getMapperNames(){
 		List<String> list = new ArrayList<String>();
 		mappers.keySet().addAll(list);

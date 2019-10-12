@@ -25,11 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
+import architecture.ee.jdbc.sqlquery.factory.impl.StaticModels;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
+import freemarker.template.TemplateModelException;
 
 public class DynamicSqlNode implements SqlNode {
 
@@ -42,15 +44,21 @@ public class DynamicSqlNode implements SqlNode {
 	private static BeansWrapper wrapper = new BeansWrapperBuilder(Configuration.VERSION_2_3_25).build();
 	
 	protected static void populateStatics(Map<String, Object> model) {
+		
 		try {
 			TemplateHashModel enumModels = wrapper.getEnumModels();
 			model.put("enums", enumModels);
 		} catch (UnsupportedOperationException e) {
 		}
+ 
+		StaticModels.populateStatics(wrapper, model);
+		
 		//TemplateHashModel staticModels = wrapper.getStaticModels();		
-		//model.put("statics", BeansWrapper.getDefaultInstance().getStaticModels());		
+		//model.put("statics", BeansWrapper.getDefaultInstance().getStaticModels());
+		
 		model.put("statics", wrapper.getStaticModels() );
 	}
+	
 	protected Logger log = LoggerFactory.getLogger(getClass());
 
 	private String text;
@@ -61,24 +69,24 @@ public class DynamicSqlNode implements SqlNode {
 		this.text = text;
 	}
 
+	public DynamicSqlNode(Configuration config, String text) {
+		this.text = text;
+	}
+	
 	/**
 	 * 다이나믹 구현은 Freemarker 을 사용하여 처리한다. 따라서 나이나믹 처리를 위해서는 반듯이 freemarker 의 규칙을
 	 * 사용하여야 한다.
 	 */
 	public boolean apply(DynamicContext context) {
-
 		Map<String, Object> map = new HashMap<String, Object>();
-
 		Object parameterObject = context.getBindings().get(DynamicContext.PARAMETER_OBJECT_KEY);
 		Object additionalParameterObject = context.getBindings().get(DynamicContext.ADDITIONAL_PARAMETER_OBJECT_KEY);
-
 		if (additionalParameterObject != null) {
 			if (additionalParameterObject instanceof Map)
-				map.putAll((Map)additionalParameterObject);
+				map.putAll((Map) additionalParameterObject);
 			else
 				map.put("additional_parameters", additionalParameterObject);
 		}
-
 		/**
 		 * 파라메터 객체가 널이 아니면 ..
 		 */
@@ -101,12 +109,10 @@ public class DynamicSqlNode implements SqlNode {
 		StringReader reader = new StringReader(text);
 		StringWriter writer = new StringWriter();
 		if( language == Language.FREEMARKER ){
-			try {
-				
+			try { 
 				populateStatics(model);
 				freemarker.template.SimpleHash root = new freemarker.template.SimpleHash(wrapper); // new freemarker.template.SimpleHash();
-				root.putAll(model);
-				
+				root.putAll(model); 
 				freemarker.template.Template template = new freemarker.template.Template("dynamic", reader, null);
 				template.setNumberFormat("computer");
 				//template.getConfiguration().setNumberFormat("");

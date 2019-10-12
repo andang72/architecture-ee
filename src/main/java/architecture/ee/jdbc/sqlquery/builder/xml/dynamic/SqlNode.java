@@ -16,5 +16,7 @@
 package architecture.ee.jdbc.sqlquery.builder.xml.dynamic;
 
 public interface SqlNode {
+	
 	boolean apply(DynamicContext context);
+
 }

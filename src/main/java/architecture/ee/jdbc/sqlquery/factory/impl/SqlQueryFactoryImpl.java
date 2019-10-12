@@ -17,6 +17,7 @@ package architecture.ee.jdbc.sqlquery.factory.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -49,7 +50,8 @@ public class SqlQueryFactoryImpl implements SqlQueryFactory {
 	
 	public SqlQueryFactoryImpl(Configuration configuration) {
 		this.configuration = configuration;
-	}	
+	}
+	
 	
 	protected void buildFromResourceLocations() {
 		DefaultResourceLoader loader = new DefaultResourceLoader();
@@ -66,8 +68,7 @@ public class SqlQueryFactoryImpl implements SqlQueryFactory {
 				}
 			}
 		}
-	}
-	
+	} 
 	
 	public SqlQuery createSqlQuery( ) {
 		SqlQueryImpl impl = new SqlQueryImpl(configuration);
@@ -96,13 +97,24 @@ public class SqlQueryFactoryImpl implements SqlQueryFactory {
 	}
 	
 	
+	public void setStaticModels(Map<String, String> staticModels) {
+		if( staticModels != null && staticModels.size() > 0 )
+		{
+			for ( Map.Entry<String, String> entry : staticModels.entrySet()) {
+				String key = entry.getKey();
+				String value = entry.getValue();
+				StaticModels.getStaticModels().put(key, value);
+			}
+		}
+	} 
+
 	public void initialize() {
 		
 		fireStateChangeEvent("SQL QUERY SERVICE", State.NONE, State.INITIALIZING);
-		
 		if (resourceLocations!=null && resourceLocations.size() > 0){
 			buildFromResourceLocations();
 		}
+		
 		
 		fireStateChangeEvent("SQL QUERY SERVICE", State.INITIALIZING, State.INITIALIZED);
 		

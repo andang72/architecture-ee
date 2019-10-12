@@ -41,7 +41,7 @@ public class DynamicSqlSource implements SqlSource {
 		this.parameterMappings = parameterMappings;
 		this.resultMappings = resultMappings;
 	}
-
+	
 	public BoundSql getBoundSql(Object parameterObject) {
 		// 1. 동적 쿼리 생성을 위한 컨텍스트 객체를 생성한다.
 		DynamicContext context;
@@ -55,7 +55,8 @@ public class DynamicSqlSource implements SqlSource {
 		// 3. 최종 쿼리를 리턴한다.
 		return new BoundSql(context.getSql(), parameterMappings, parameterObject, resultMappings);
 	}
-
+	
+	
 	public BoundSql getBoundSql(Object parameterObject, Map<String, Object> additionalParameters) {
 		// 1. 다이나믹 쿼리 생성을 위한 컨텍스트 객체를 생성한다.
 		DynamicContext context = new DynamicContext(parameterObject, additionalParameters);

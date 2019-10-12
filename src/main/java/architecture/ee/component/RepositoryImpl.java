@@ -105,16 +105,6 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 			String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
 			String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.1-RELEASE");  
 			System.out.println( String.format("  %s : %s", title, version ) );
-			
-//				InputStream in = getClass().getResourceAsStream(LOGO); 
-//				if( in != null) {
-//					BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-//					String str = IOUtils.toString(in, Charsets.toCharset(ApplicationConstants.DEFAULT_CHAR_ENCODING)); 
-//					System.out.println( str ); 
-//				}
-//				String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
-//				String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.1-RELEASE");  
-//				System.out.println( String.format("  %s : %s", title, version ) );
 		} catch (IOException e) {
 			log.warn("WOOPS", e);
 		}

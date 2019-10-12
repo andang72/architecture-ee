@@ -18,10 +18,10 @@ package architecture.ee.jdbc.sqlquery.factory;
 import architecture.ee.jdbc.sqlquery.factory.impl.SqlQueryFactoryImpl;
 
 public class SqlQueryFactoryBuilder {
-
+ 
 	public static SqlQueryFactory build() {
 		Configuration config = new Configuration();
-	    return new SqlQueryFactoryImpl(config);
+		return new SqlQueryFactoryImpl(config);
 	}
 	
 	public static SqlQueryFactory build(Configuration config) {

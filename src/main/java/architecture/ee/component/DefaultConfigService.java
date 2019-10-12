@@ -121,22 +121,20 @@ public class DefaultConfigService implements ConfigService {
 		if( isConfigPersistenceJdbcEnabled() ){
 			DataSource dataSourceToUse = this.dataSource;
 			// 데이터베이스 설정이 완료되지 않았다면 널을 리턴한다.
+			logger.debug("Checking DataSource exist.");
 			if (dataSourceToUse != null) {
-				
 				if ( !isSetDataSource() ) {
 					logger.debug( "DataSource not configed.");
 					return null ;
-				} 
+				}
 				
 				if(logger.isDebugEnabled()) {
 					logger.debug(FrameworkLogLocalizer.getMessage("003014"));					
 				}
-				try { 		
-					
+				try { 
 					if(!StringUtils.isNullOrEmpty( getExternalSqlFilepathIfExist() )) {
 						buildExternalSql(getExternalSqlFilepathIfExist());
 					} 
-					
 					JdbcApplicationProperties impl = new JdbcApplicationProperties(localized, isUsingExternalSql());
 					impl.setSqlConfiguration(sqlQueryFactory.getConfiguration());
 					impl.setApplicationEventPublisher(applicationEventPublisher);
