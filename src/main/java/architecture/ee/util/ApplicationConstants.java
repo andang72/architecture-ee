@@ -38,6 +38,9 @@ public class ApplicationConstants {
     public static final String SERVICES_CONFIG_PERSISTENCE_JDBC_EXTERNAL_SQL_FILEPATH = "services.config.persistence.jdbc.filepath";
     
     
+    public static final String RESOURCES_PROP_NAME = "resources";
+
+    
     public static final String DATABASE_PROP_NAME = "database";
     
     public static final long SECOND = 1000;

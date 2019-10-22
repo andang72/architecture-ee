@@ -22,38 +22,44 @@ import architecture.ee.util.xml.XmlWriter;
 
 public abstract class AbstractXmlEditor {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
-	
+	protected Logger log = LoggerFactory.getLogger(getClass());
+
 	private File file;
 
 	private Document document;
-	
-	public AbstractXmlEditor() { 
-	
+
+	public AbstractXmlEditor() {
 	}
-	public AbstractXmlEditor(File file) { 
+
+	public AbstractXmlEditor(File file) {
 		this.file = file;
-		read();
-		initialize();
+		if (this.file.exists())
+			read();
 	}
-	
+
+	protected void setFile(File file) {
+		this.file = file;
+		if (this.file.exists())
+			read();
+	}
+
 	protected Document getDocument() {
 		return document;
 	}
-	
+
 	protected abstract void initialize();
-	
+
 	public void read() {
-		Reader reader = null; 
+		Reader reader = null;
 		try {
 			reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-			readDoc( reader );
-		} catch (Exception e) { 
-			
+			readDoc(reader);
+		} catch (Exception e) {
+
 		}
 	}
-	
-	private void readDoc(Reader in) throws IOException { 
+
+	private void readDoc(Reader in) throws IOException {
 		try {
 			SAXReader xmlReader = new SAXReader();
 			xmlReader.setEncoding("UTF-8");
@@ -68,12 +74,11 @@ public abstract class AbstractXmlEditor {
 		}
 	}
 
-	public void write() { 
+	public void write() {
 		writeDoc(this.document, this.file);
 	}
-	
-	
-	private void writeDoc(Document document, File file) { 
+
+	private void writeDoc(Document document, File file) {
 		boolean error = false;
 		// Write data out to a temporary file first.
 		File tempFile = null;
@@ -121,5 +126,5 @@ public abstract class AbstractXmlEditor {
 			}
 		}
 	}
-	
+
 }
