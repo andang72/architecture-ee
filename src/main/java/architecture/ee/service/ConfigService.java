@@ -30,6 +30,12 @@ public interface ConfigService {
 	
 	public boolean isSetupComplete();
 	
+	/**
+	 * 데이터베이스 구성 여부를 리턴한다.
+	 * @return
+	 */
+	public boolean isDatabaseInitialized();
+	
 	public Locale getLocale();
 	
 	public void setLocale(Locale newLocale);

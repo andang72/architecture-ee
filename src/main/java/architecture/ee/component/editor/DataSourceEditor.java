@@ -173,6 +173,15 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		String comment;
 		String exportName;
 		String jndiName ; 
+		boolean active; 
+
+		public boolean isActive() {
+			return active;
+		}
+
+		public void setActive(boolean active) {
+			this.active = active;
+		}
 		
 		public String getComment() {
 			return comment;
@@ -211,6 +220,15 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		String url; 
 		String username; 
 		String password; 
+		boolean active; 
+
+		public boolean isActive() {
+			return active;
+		}
+
+		public void setActive(boolean active) {
+			this.active = active;
+		}
 
 		public String getComment() {
 			return comment;
@@ -276,6 +294,16 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		String password;
 		
 		Map<String, String> connectionProperties = new HashMap<String, String>(); 
+		
+		boolean active; 
+
+		public boolean isActive() {
+			return active;
+		}
+
+		public void setActive(boolean active) {
+			this.active = active;
+		}
 		
 		public String getComment() {
 			return comment;

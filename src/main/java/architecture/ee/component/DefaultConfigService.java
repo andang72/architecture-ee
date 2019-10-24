@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +71,7 @@ public class DefaultConfigService implements ConfigService {
     
 	public DefaultConfigService() { 
 	}
-	
+	 
 	
 	public boolean isSetDataSource() {
 		boolean isSetDataSource = dataSource != null ? true : false ;
@@ -81,6 +82,30 @@ public class DefaultConfigService implements ConfigService {
 		} 
 		return isSetDataSource;
 	}
+	
+	public boolean isDatabaseInitialized() {
+		boolean result = isSetDataSource();
+		if(result) {
+			String tables = repository.getSetupApplicationProperties().getOrDefault("services.config.tables", "AC_UI_PROPERTY"); 
+			try {
+				
+				JdbcTemplate jt = new JdbcTemplate (dataSource) ;
+				StringBuilder sb = new StringBuilder();
+				sb.append("SELECT * FROM ").append(tables);
+				jt.queryForList(sb.toString());
+				result = true;
+				//result = ExtendedJdbcUtils.tableExists(dataSource, "tables");
+				
+			} catch (Exception e) {
+				result = false;
+				logger.error(e.getMessage(), e);
+			} 
+			logger.debug("VALIDATE tables '{}' exist : {} ", tables,  result );
+		}
+		return result;
+	}
+	
+	
 	
 	public void initialize() {		
 		state = State.INITIALIZING;
@@ -127,7 +152,7 @@ public class DefaultConfigService implements ConfigService {
 					logger.debug( "DataSource not configed.");
 					return null ;
 				}
-				
+				 
 				if(logger.isDebugEnabled()) {
 					logger.debug(FrameworkLogLocalizer.getMessage("003014"));					
 				}
@@ -135,16 +160,24 @@ public class DefaultConfigService implements ConfigService {
 					if(!StringUtils.isNullOrEmpty( getExternalSqlFilepathIfExist() )) {
 						buildExternalSql(getExternalSqlFilepathIfExist());
 					} 
+					
+					boolean isExists = isDatabaseInitialized();
+					if( !isExists ) {
+						return null ;
+					}
+					
 					JdbcApplicationProperties impl = new JdbcApplicationProperties(localized, isUsingExternalSql());
 					impl.setSqlConfiguration(sqlQueryFactory.getConfiguration());
 					impl.setApplicationEventPublisher(applicationEventPublisher);
 					impl.setDataSource(dataSourceToUse);
 					impl.afterPropertiesSet(); 
+					 
 					if(logger.isDebugEnabled())
 						logger.debug(CommonLogLocalizer.format("003015", StringUtils.collectionToCommaDelimitedString(impl.getPropertyNames()) ) ); 
+					
 					return impl; 
 				} catch (Exception e) {
-					throw new ConfigurationError(e);
+					throw new ConfigurationError(e.getMessage(), e);
 				}
 			}			
 		}
@@ -406,4 +439,5 @@ public class DefaultConfigService implements ConfigService {
 		if( applicationEventPublisher != null )
 			applicationEventPublisher.publishEvent(event);
 	}
+
 }

@@ -326,8 +326,8 @@ public class JdbcApplicationProperties extends ExtendedJdbcDaoSupport implements
 						new SqlParameterValue(Types.VARCHAR, name));
 			}
 		}
-	}
-
+	} 
+	
 	private void loadProperties(Map<String, String> map) {
 
 		if (getJdbcTemplate() != null) {

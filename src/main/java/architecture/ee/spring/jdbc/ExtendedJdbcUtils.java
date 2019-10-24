@@ -20,12 +20,16 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.support.JdbcUtils;
 
 public class ExtendedJdbcUtils extends JdbcUtils {
-
+	
+	private static final Logger log = LoggerFactory.getLogger(ExtendedJdbcUtils.class);
+	
 	public enum DB {
 		ORACLE, POSTGRESQL, MYSQL, DB2, SQLSERVER, UNKNOWN;
 
@@ -35,6 +39,47 @@ public class ExtendedJdbcUtils extends JdbcUtils {
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(ExtendedJdbcUtils.class);
+
+	
+	
+	public static Boolean tableExists ( DataSource dataSource , String tableName ) throws SQLException  {
+		
+		Connection con =  dataSource.getConnection();
+		try {
+			return tableExists(con, tableName);
+		}finally {
+			closeConnection(con);
+		}
+	}
+	
+	
+	protected static boolean tableExists(final Connection connection, final String tableName) throws SQLException {
+		Boolean result = false;
+		if (connection != null) {
+			ResultSet tables = connection.getMetaData().getTables(null, null, tableName, null); 
+			while (tables.next()) { 
+			
+				String currentTableName = tables.getString("TABLE_NAME");
+				
+				logger.debug("extracting tablename : {}", currentTableName );
+				
+				if (currentTableName.equals(tableName)) {
+					result = true;
+				}
+				
+			}
+			tables.close();
+			
+			ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null); 
+			if (rs.next()) {
+			      System.out.println("Table exists"); 
+			    } else {
+			      System.out.println("Table does not exist"); 
+			    }
+			
+		}
+		return result;
+	}
 
 	public static DB extractDB(Connection con) {
 		DB db = DB.UNKNOWN;
