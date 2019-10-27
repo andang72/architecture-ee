@@ -61,7 +61,8 @@ public class DefaultDataSourceFactory implements DataSourceFactory {
 		
 		ApplicationProperties config = repository.getSetupApplicationProperties(); 
 		if(log.isDebugEnabled())
-			log.debug(FrameworkLogLocalizer.format("003040", profileName));		
+			log.debug(FrameworkLogLocalizer.format("003040", profileName));	
+		
 		DataSourceConfigReader reader = new DataSourceConfigReader( config ); 
 		if( !reader.hasDataSourceConfig(profileName) ) {
 			if( config.getBooleanProperty(ApplicationConstants.SETUP_COMPLETE_PROP_NAME, false))

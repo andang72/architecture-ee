@@ -40,11 +40,11 @@ public class DataSourceEditor extends AbstractXmlEditor {
   	</jndiDataSourceProvider>
 	*/
 	public void setJndiDataSource(JndiDataSourceConfig bean) { 
-		Element oldElement = getChild(this.element, bean.exportName);
+		Element oldElement = getChild(this.element, bean.name);
 		if( oldElement != null ) {
 			element.remove(oldElement);
 		}  
-		Element newElement = element.addElement(bean.exportName);  
+		Element newElement = element.addElement(bean.name);  
 		if(!StringUtils.isNullOrEmpty(bean.comment))
 			newElement.addComment(bean.comment);
 		
@@ -55,7 +55,7 @@ public class DataSourceEditor extends AbstractXmlEditor {
 
 	/**
 		<pooledDataSourceProvider> 
-		<exportName></exportName>
+		<name></name>
 	    <driverClassName></driverClassName> 
 	    <url></url>
 	    <username></username>
@@ -75,11 +75,11 @@ public class DataSourceEditor extends AbstractXmlEditor {
 	 */
 	
 	public void setPooledDataSource(PooledDataSourceConfig bean) { 
-		Element oldElement = getChild(this.element, bean.exportName);
+		Element oldElement = getChild(this.element, bean.name);
 		if( oldElement != null ) {
 			element.remove(oldElement);
 		} 
-		Element newElement = element.addElement(bean.exportName); 
+		Element newElement = element.addElement(bean.name); 
 		
 		if(!StringUtils.isNullOrEmpty(bean.comment))
 			newElement.addComment(bean.comment);
@@ -108,7 +108,7 @@ public class DataSourceEditor extends AbstractXmlEditor {
 
 	/**
 	<driverManagerDataSourceProvider> 
-		<exportName></exportName>
+		<name></name>
 	    <driverClassName></driverClassName> 
 	    <url></url>
 	    <username></username>
@@ -116,11 +116,11 @@ public class DataSourceEditor extends AbstractXmlEditor {
 	</driverManagerDataSourceProvider> 
 	 */
 	public void setDriverManagerDataSource(DriverManagerDataSourceConfig bean) { 
-		Element oldElement = getChild(this.element, bean.exportName);
+		Element oldElement = getChild(this.element, bean.name);
 		if( oldElement != null ) {
 			element.remove(oldElement);
 		} 
-		Element newElement = element.addElement(bean.exportName); 
+		Element newElement = element.addElement(bean.name); 
 		
 		if(!StringUtils.isNullOrEmpty(bean.comment))
 			newElement.addComment(bean.comment);
@@ -149,21 +149,18 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		return null;
 	}
 
-	public static PooledDataSourceConfig newPooledDataSourceBean(String exportName) {
-		PooledDataSourceConfig bean = new PooledDataSourceConfig();
-		bean.exportName = exportName;
+	public static PooledDataSourceConfig newPooledDataSourceBean(String name) {
+		PooledDataSourceConfig bean = new PooledDataSourceConfig(name); 
 		return bean;
 	}
 	
-	public static JndiDataSourceConfig newJndiDataSourceBean(String exportName) {
-		JndiDataSourceConfig bean = new JndiDataSourceConfig();
-		bean.exportName = exportName;
+	public static JndiDataSourceConfig newJndiDataSourceBean(String name) {
+		JndiDataSourceConfig bean = new JndiDataSourceConfig(name); 
 		return bean;
 	} 
 	
-	public static DriverManagerDataSourceConfig newsetDriverManagerDataSourceBean(String exportName) {
-		DriverManagerDataSourceConfig bean = new DriverManagerDataSourceConfig();
-		bean.exportName = exportName;
+	public static DriverManagerDataSourceConfig newsetDriverManagerDataSourceBean(String name) {
+		DriverManagerDataSourceConfig bean = new DriverManagerDataSourceConfig(name); 
 		return bean;
 	} 
 	
@@ -171,9 +168,22 @@ public class DataSourceEditor extends AbstractXmlEditor {
 	public static class JndiDataSourceConfig implements DataSourceConfig {
 		
 		String comment;
-		String exportName;
+		String name;
 		String jndiName ; 
 		boolean active; 
+		String beanName;
+
+		public JndiDataSourceConfig(String name) { 
+			this.name = name;
+		}
+
+		public String getBeanName() {
+			return beanName;
+		}
+
+		public void setBeanName(String beanName) {
+			this.beanName = beanName;
+		}
 
 		public boolean isActive() {
 			return active;
@@ -191,12 +201,12 @@ public class DataSourceEditor extends AbstractXmlEditor {
 			this.comment = comment;
 		}
 		
-		public String getExportName() {
-			return exportName;
+		public String getName() {
+			return name;
 		}
 
-		public void setExportName(String exportName) {
-			this.exportName = exportName;
+		public void setName(String exportName) {
+			this.name = exportName;
 		}
 		
 		public String getJndiName() {
@@ -215,12 +225,26 @@ public class DataSourceEditor extends AbstractXmlEditor {
 	public static class DriverManagerDataSourceConfig implements DataSourceConfig {
 		
 		String comment; 
-		String exportName; 
+		String name; 
 		String driverClassName ; 
 		String url; 
 		String username; 
 		String password; 
 		boolean active; 
+		String beanName;
+		
+		public DriverManagerDataSourceConfig(String name) {
+			super();
+			this.name = name;
+		}
+
+		public String getBeanName() {
+			return beanName;
+		}
+
+		public void setBeanName(String beanName) {
+			this.beanName = beanName;
+		}
 
 		public boolean isActive() {
 			return active;
@@ -238,12 +262,12 @@ public class DataSourceEditor extends AbstractXmlEditor {
 			this.comment = comment;
 		}
 
-		public String getExportName() {
-			return exportName;
+		public String getName() {
+			return name;
 		}
 
-		public void setExportName(String exportName) {
-			this.exportName = exportName;
+		public void setName(String exportName) {
+			this.name = exportName;
 		}
 
 		public String getDriverClassName() {
@@ -287,15 +311,29 @@ public class DataSourceEditor extends AbstractXmlEditor {
 	public static class PooledDataSourceConfig implements DataSourceConfig {
 		
 		String comment; 
-		String exportName; 
+		String name; 
 		String driverClassName ; 
 		String url; 
 		String username; 
 		String password;
+		String beanName;
 		
 		Map<String, String> connectionProperties = new HashMap<String, String>(); 
 		
 		boolean active; 
+
+		public PooledDataSourceConfig(String name) {
+			super();
+			this.name = name;
+		}
+
+		public String getBeanName() {
+			return beanName;
+		}
+
+		public void setBeanName(String beanName) {
+			this.beanName = beanName;
+		}
 
 		public boolean isActive() {
 			return active;
@@ -313,12 +351,12 @@ public class DataSourceEditor extends AbstractXmlEditor {
 			this.comment = comment;
 		}
 
-		public String getExportName() {
-			return exportName;
+		public String getName() {
+			return name;
 		}
 
-		public void setExportName(String exportName) {
-			this.exportName = exportName;
+		public void setName(String exportName) {
+			this.name = exportName;
 		}
 
 		public String getDriverClassName() {
