@@ -48,14 +48,14 @@ public abstract class EventSupport implements ApplicationEventPublisherAware {
 			eventBus.unregister(listener);
 	}
 	
-	protected void fireEvent(Object event){		 
-		
+	protected void fireEvent(Object event){	
 		LOG.debug("EVENT:" + event.getClass().getName());
 		
 		if( eventBus != null ){ 
 			LOG.debug("GOOGLE EVENT ENABLED");
 			eventBus.post(event);
 		} 
+		
 		if( applicationEventPublisher != null ) {
 			LOG.debug("SPRING EVENT ENABLED");
 			applicationEventPublisher.publishEvent(event);

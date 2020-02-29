@@ -172,6 +172,7 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		String jndiName ; 
 		boolean active; 
 		String beanName;
+		String username ;
 
 		public JndiDataSourceConfig(String name) { 
 			this.name = name;
@@ -218,6 +219,10 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		
 		public Types getType() {
 			return Types.JNDI;
+		}
+ 
+		public String getUsername() { 
+			return username;
 		}
 	} 
 	

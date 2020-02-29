@@ -31,16 +31,28 @@ public class ExtendedJdbcUtils extends JdbcUtils {
 	private static final Logger log = LoggerFactory.getLogger(ExtendedJdbcUtils.class);
 	
 	public enum DB {
-		ORACLE, POSTGRESQL, MYSQL, DB2, SQLSERVER, UNKNOWN;
-
+		
+		ORACLE, 
+		POSTGRESQL, 
+		MYSQL, 
+		DB2, 
+		SQLSERVER, 
+		UNKNOWN; 
+		
 		boolean scrollResultsSupported = false;
 		boolean fetchSizeSupported = false;
-
+		
+		public boolean isScrollResultsSupported() {
+			return scrollResultsSupported;
+		}
+		public boolean isFetchSizeSupported() {
+			return fetchSizeSupported;
+		} 
+		
 	}
-
-	private static final Logger logger = LoggerFactory.getLogger(ExtendedJdbcUtils.class);
-
 	
+
+	private static final Logger logger = LoggerFactory.getLogger(ExtendedJdbcUtils.class); 
 	
 	public static Boolean tableExists ( DataSource dataSource , String tableName ) throws SQLException  {
 		
@@ -82,37 +94,9 @@ public class ExtendedJdbcUtils extends JdbcUtils {
 	}
 
 	public static DB extractDB(Connection con) {
-		DB db = DB.UNKNOWN;
-
+		DB db = DB.UNKNOWN; 
 		try {
-			DatabaseMetaData dbmd = con.getMetaData();
-			String dbName = commonDatabaseName(dbmd.getDatabaseProductName()).toLowerCase();
-			String driverName = dbmd.getDriverName().toLowerCase();
-			boolean scrollResultsSupported = scrollResultsSupported(dbmd);
-			boolean fetchSizeSupported = true;
-			if (dbName.indexOf("oracle") != -1) {
-				db = DB.ORACLE;
-			} else if (dbName.indexOf("db2") != -1) {
-				db = DB.DB2;
-			} else if (dbName.indexOf("mysql") != -1) {
-				db = DB.MYSQL;
-			} else if (dbName.indexOf("sql server") != -1) {
-				db = DB.SQLSERVER;
-				if (driverName.indexOf("una") != -1) {
-					fetchSizeSupported = true;
-				} else if (driverName.indexOf("jtds") != -1) {
-					fetchSizeSupported = true;
-				} else {
-					fetchSizeSupported = false;
-					scrollResultsSupported = false;
-				}
-
-			} else if (dbName.indexOf("postgres") != -1) {
-				db = DB.POSTGRESQL;
-				fetchSizeSupported = false;
-			}
-			db.scrollResultsSupported = scrollResultsSupported;
-			db.fetchSizeSupported = fetchSizeSupported;
+			db = extractDB(con.getMetaData());
 
 		} catch (SQLException ex) {
 			logger.debug("JDBC driver 'extractDB' method threw exception", ex);
@@ -120,6 +104,45 @@ public class ExtendedJdbcUtils extends JdbcUtils {
 		return db;
 	}
 
+	public static DB extractDB (DatabaseMetaData dbmd) {
+		DB db = DB.UNKNOWN;
+		try {
+		String dbName = commonDatabaseName(dbmd.getDatabaseProductName()).toLowerCase();
+		String driverName = dbmd.getDriverName().toLowerCase();
+		
+		boolean scrollResultsSupported = scrollResultsSupported(dbmd);
+		boolean fetchSizeSupported = true;
+		
+		if (dbName.indexOf("oracle") != -1) {
+			db = DB.ORACLE;
+		} else if (dbName.indexOf("db2") != -1) {
+			db = DB.DB2;
+		} else if (dbName.indexOf("mysql") != -1) {
+			db = DB.MYSQL;
+		} else if (dbName.indexOf("sql server") != -1) {
+			db = DB.SQLSERVER;
+			if (driverName.indexOf("una") != -1) {
+				fetchSizeSupported = true;
+			} else if (driverName.indexOf("jtds") != -1) {
+				fetchSizeSupported = true;
+			} else {
+				fetchSizeSupported = false;
+				scrollResultsSupported = false;
+			}
+
+		} else if (dbName.indexOf("postgres") != -1) {
+			db = DB.POSTGRESQL;
+			fetchSizeSupported = false;
+		}
+		db.scrollResultsSupported = scrollResultsSupported;
+		db.fetchSizeSupported = fetchSizeSupported;
+		
+		} catch (SQLException ex) {
+			logger.debug("JDBC driver 'extractDB' method threw exception", ex);
+		} 
+		return db;
+	}
+	
 	public static boolean scrollResultsSupported(Connection con) {
 		try {
 			DatabaseMetaData dbmd = con.getMetaData();

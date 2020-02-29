@@ -399,7 +399,11 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 
 	@Override
 	public boolean isSetDataSource() {
-		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isDatabaseInitialized() {
 		return false;
 	}
 

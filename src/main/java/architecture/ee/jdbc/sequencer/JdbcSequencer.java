@@ -212,6 +212,12 @@ public class JdbcSequencer implements Sequencer {
         finally {
             JdbcUtils.closeResultSet(rs);
             JdbcUtils.closeStatement(pstmt);
+            
+            try {
+				con.commit();
+			} catch (SQLException e) { 
+			}
+            
             DataSourceUtils.releaseConnection(con, getDataSource());
         }
 
@@ -230,8 +236,7 @@ public class JdbcSequencer implements Sequencer {
 
     private void createNewID(Connection con, int type) throws SQLException {
     	
-        logger.warn(CommonLogLocalizer.format("003105", type, name));
-
+        logger.warn(CommonLogLocalizer.format("003105", type, name)); 
         // create new ID row
         PreparedStatement pstmt = null;
         try {
@@ -253,9 +258,9 @@ public class JdbcSequencer implements Sequencer {
 			pstmt.setString(2, this.name);
 			pstmt.setInt(3, this.type );
 			
-            pstmt.execute();
+            pstmt.execute();  
         }
-        finally {
+        finally { 
         	JdbcUtils.closeStatement(pstmt);
         }
     }
