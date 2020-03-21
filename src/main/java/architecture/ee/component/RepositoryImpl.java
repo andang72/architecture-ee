@@ -43,7 +43,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.ServletContextResource;
 
@@ -55,6 +54,7 @@ import architecture.ee.service.ApplicationProperties;
 import architecture.ee.service.ConfigRoot;
 import architecture.ee.service.Repository;
 import architecture.ee.util.ApplicationConstants;
+import architecture.ee.util.ConsoleColors;
 import architecture.ee.util.StringUtils;
 
 /**
@@ -101,10 +101,11 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 					String str = IOUtils.toString(in, Charsets.toCharset(ApplicationConstants.DEFAULT_CHAR_ENCODING)); 
 					System.out.println( str ); 
 				} 
-			}
+			} 
+
 			String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
 			String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.1-RELEASE");  
-			System.out.println( String.format("  %s : %s", title, version ) );
+			System.out.println( String.format("\\033[0;34m %s \\033[0;34m : \\033[0;94m %s \\033[0;94m", title, version) );
 		} catch (IOException e) {
 			log.warn("WOOPS", e);
 		}
