@@ -409,7 +409,7 @@ public class Blowfish {
 
     /**
      * implementation of the Blowfish encryption algorithm in ECB mode
-     * @author Markus Hahn <markus_hahn@gmx.net>
+     * @author <a href="mailto:markus_hahn@gmx.net">Markus Hahn</a>
      * @version Feburary 14, 2001
      */
     private static class BlowfishECB

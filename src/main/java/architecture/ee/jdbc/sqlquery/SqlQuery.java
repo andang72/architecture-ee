@@ -30,7 +30,6 @@ public interface SqlQuery {
      * 사용할 데이터소스를 설정한다.
      * 
      * @param dataSource
-     * @return
      */
     public void setDataSource(DataSource dataSource);
     
@@ -39,8 +38,7 @@ public interface SqlQuery {
     /**
      * list() 함수 호출시에 데이터 페이징 처리를 위하여 사용된다. 쿼리 결과의 startIndex 부터
      * 데이터를 읽어 데이터를 리턴한다. 쿼리 실행후에 startIndex 값은 0 으로 초기화 된다.
-     * @param startIndex
-     * @return
+     * @param startIndex 
      */
     public SqlQuery setStartIndex(int startIndex);
     
@@ -49,15 +47,14 @@ public interface SqlQuery {
      * maxResults 까지의 데이터를 읽어 데이터를 리턴한다. 쿼리 실행후에 maxResults 값은 -1 으로 초기화되며, 
      * -1 값은 페이지 처리를 하지 않는 것과 동일한 결과를 가져온다.
      * 
-     * @param maxResults
-     * @return
+     * @param maxResults 
      */
     public SqlQuery setMaxResults(int maxResults);
         
     /**
      * 다이나믹 쿼리 사용을 위한 추가 파라메터 값 설정 .
      * @param additionalParameters
-     * @return
+     * @return SqlQuery
      */
 	public SqlQuery setAdditionalParameters(Map<String, Object> additionalParameters);
     
@@ -87,8 +84,8 @@ public interface SqlQuery {
 	
 	/**
 	 * 스크립트 모드로 쿼리를 실행한다.
-	 * @param statement
-	 * @return
+	 * @param statemenKey
+	 * @return Object
 	 */
 	public Object executeScript(String statemenKey, boolean stopOnError) ;
 	

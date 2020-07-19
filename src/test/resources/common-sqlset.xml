@@ -63,7 +63,7 @@
 	</sql-query>
 
 
-    <row-mapper name="companyRowMapper" class="architecture.common.user.DefaultCompany" >		
+   <!--  <row-mapper name="companyRowMapper" class="architecture.common.user.DefaultCompany" >		
 		<parameterMapping name="companyId" column="COMPANY_ID" javaType="long" />	
 		<parameterMapping name="displayName" column="DISPLAY_NAME" javaType="string" />	
 		<parameterMapping name="name" column="NAME" javaType="string" />	
@@ -71,7 +71,7 @@
 		<parameterMapping name="description" column="DESCRIPTION" javaType="string" />
 		<parameterMapping name="creationDate" column="CREATION_DATE" javaType="date" />
 		<parameterMapping name="modifiedDate" column="MODIFIED_DATE" javaType="date" />
-    </row-mapper>
+    </row-mapper> -->
 
 	<sql-query name="SELECT_ALL_FROM_TABLE" description="테이블 데이터 조회">       
         <![CDATA[

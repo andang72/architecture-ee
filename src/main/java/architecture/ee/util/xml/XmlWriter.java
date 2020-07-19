@@ -117,7 +117,7 @@ public class XmlWriter extends XMLFilterImpl implements LexicalHandler {
     /**
      * what is the maximum allowed character code
      * such as 127 in US-ASCII (7 bit) or 255 in ISO-* (8 bit)
-     * or -1 to not escape any characters (other than the special XML characters like < > &)
+     * or -1 to not escape any characters (other than the special XML characters like &lt;  &gt;  &amp; )
      */
     private int maximumAllowedCharacter;
 

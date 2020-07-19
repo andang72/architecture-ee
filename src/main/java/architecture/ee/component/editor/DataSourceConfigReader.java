@@ -41,7 +41,7 @@ public class DataSourceConfigReader {
 		return getProviderNames(name).size() > 0 ? true : false;
 	}
 	
-	public DataSourceConfig getDataSoruceConfig(String name) {    
+	public DataSourceConfig getDataSoruceConfig(String name) {
 		log.debug("lookup datasource config for {}", name );
 		for( String provider : getProviderNames(name) ){
 			String prefix1 = getPrefix(name);

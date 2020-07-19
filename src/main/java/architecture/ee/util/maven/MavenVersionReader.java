@@ -23,7 +23,7 @@ public class MavenVersionReader {
 	 * <p>readVersionFromJar.</p>
 	 *
 	 * @param f a {@link java.io.File} object.
-	 * @return a {@link architecture.ee.util.maven.anotheria.util.maven.MavenVersion} object.
+	 * @return MavenVersion
 	 */
 	public static final MavenVersion readVersionFromJar(File f){
 		if (!f.exists())
@@ -72,7 +72,7 @@ public class MavenVersionReader {
 	 *
 	 * @param content a {@link java.lang.String} object.
 	 * @param timestamp a long.
-	 * @return a {@link architecture.ee.util.maven.anotheria.util.maven.MavenVersion} object.
+	 * @return  MavenVersion object
 	 */
 	public static final MavenVersion readVersionFromString(String content, long timestamp){
 		String[] lines = StringUtils.tokenize(StringUtils.removeChar(content, '\r'), '\n');
@@ -98,7 +98,7 @@ public class MavenVersionReader {
 	 * <p>readVersionFromFile.</p>
 	 *
 	 * @param f a {@link java.io.File} object.
-	 * @return a {@link architecture.ee.util.maven.anotheria.util.maven.MavenVersion} object.
+	 * @return a {@link architecture.ee.util.maven.MavenVersion} object.
 	 */
 	public static final MavenVersion readVersionFromFile(File f){
 		if (!f.exists())
@@ -119,7 +119,7 @@ public class MavenVersionReader {
 	 * <p>findVersionInDirectory.</p>
 	 *
 	 * @param dir a {@link java.io.File} object.
-	 * @return a {@link architecture.ee.util.maven.anotheria.util.maven.MavenVersion} object.
+	 * @return a {@link architecture.ee.util.maven.MavenVersion} object.
 	 */
 	public static final MavenVersion findVersionInDirectory(File dir){
 		if (!dir.exists())
@@ -151,7 +151,7 @@ public class MavenVersionReader {
 	 *
 	 * @param dir a {@link java.io.File} object.
 	 * @param artifactName a {@link java.lang.String} object.
-	 * @return a {@link architecture.ee.util.maven.anotheria.util.maven.MavenVersion} object.
+	 * @return a {@link architecture.ee.util.maven.MavenVersion} object.
 	 */
 	public static final MavenVersion findJarInDirectory(File dir, String artifactName){
 		if (!dir.exists())

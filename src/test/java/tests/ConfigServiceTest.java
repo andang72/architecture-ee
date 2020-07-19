@@ -56,7 +56,7 @@ public class ConfigServiceTest {
 	}
 	
 	
-	@Test
+	
 	public void testMinifest() {
 		URLClassLoader cl = (URLClassLoader) getClass().getClassLoader();
 		try {
