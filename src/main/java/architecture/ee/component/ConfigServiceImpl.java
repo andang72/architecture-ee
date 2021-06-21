@@ -81,14 +81,12 @@ public class ConfigServiceImpl extends ComponentImpl implements ConfigService {
 	public void initialize() {		
 		state = State.INITIALIZING;
 		logger.info(FrameworkLogLocalizer.format("002001", "ConfigService", state.name() ));
-		boolean isSetDataSource = dataSource != null ? true : false ;
-		
+		boolean isSetDataSource = dataSource != null ? true : false ;		
 		if(logger.isInfoEnabled()) {
 			logger.info(FrameworkLogLocalizer.format("002002",  "database", isSetDataSource  ? "true" : "false" ));
 			logger.info(FrameworkLogLocalizer.format("002002",  "persistence", isConfigPersistenceJdbcEnabled() ? "database":"xml" ));
 			logger.info(FrameworkLogLocalizer.format("002002",  "external sql", isUsingExternalSql() ? "true":"false" ));
-		}
-			
+		}			
 		if( isSetDataSource )
 		{
 			getApplicationProperties();

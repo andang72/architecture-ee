@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Element;
-
+ 
 import architecture.ee.util.StringUtils; 
  
 
@@ -298,7 +298,7 @@ public class DataSourceEditor extends AbstractXmlEditor {
 		public void setUsername(String username) {
 			this.username = username;
 		}
-
+ 
 		public String getPassword() {
 			return password;
 		}

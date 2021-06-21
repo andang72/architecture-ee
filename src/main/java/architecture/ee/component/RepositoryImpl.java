@@ -103,8 +103,8 @@ public class RepositoryImpl implements Repository, ServletContextAware {
 			} 
 
 			String title = StringUtils.defaultString(this.getClass().getPackage().getImplementationTitle(), "ARCHITECTURE EE");
-			String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.2-RELEASE");  
-			System.out.println( String.format("\033[0;34m %s \033[0m : \033[0;34m %s \033[0m", title, version) );
+			String version = StringUtils.defaultString(this.getClass().getPackage().getImplementationVersion(), "5.1.3-RELEASE");  
+			System.out.println( String.format("%s : %s", title, version) );
 		} catch (IOException e) {
 			log.warn("WOOPS", e);
 		}
