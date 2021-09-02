@@ -11,9 +11,10 @@
 ------
 ## Getting Started
 
-5.1.x 버전 부터는 Java 8+ 지원
+- 5.1.x 버전 부터는 Java 8+ 지원
+- 5.2.x 버전 부터는 Spring 5.2.x 지원
 
-spring context 파일에 아래의 내용을 추가한다.
+spring context 파일에 아래의 내용을 추가하여 기본 모듈들을 로드한다.
 
 ```xml
 	
@@ -22,10 +23,12 @@ spring context 파일에 아래의 내용을 추가한다.
 	<import resource="classpath:context/default-transaction-context.xml"/>
 	<import resource="classpath:context/default-freemarker-context.xml"/>
 	<import resource="classpath:context/default-ehcache-context.xml"/>
-  
+ ``` 
+   
 JTA transaction 을 사용하는 경우 default-transaction-context.xml 을 주석처리하고 JTA 설정을 추가한다.
 DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설정을 아래와 같이 설정한다.
 
+```xml
   <!-- database connection configuration -->
    <default>
       <pooledDataSourceProvider> 
@@ -49,7 +52,6 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
   </database> 
  ``` 
   
-  
 ------
 
 ## Opensource
@@ -58,20 +60,20 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 
 | Opensource | Version |
 |------------|---------|
-| spingframework | 4.3.23.RELEASE |
-| commons-io | 2.5 |
-| commons-codec | 1.10 |
-| commons-dbcp2 | 1.4, 2.1 |
+| spingframework | 5.2.16.RELEASE |
+| commons-io | 2.11.0 |
+| commons-codec | 1.15 |
+| commons-dbcp2 | 1.4, 2.9.0 |
 | commons-pool2 | 2.4.2 |
 | commons-io | 2.5 |
 | commons-logging | 1.2 |
 | freemarker | 2.3.28 |
-| dom4j | 2.1.1 |
+| dom4j | 2.1.2 |
 | xml-apis | 1.0.b2 |
 | guava | 27.1-jre |
 | ehcache | 3.7.0 |
-| slf4j-api | 1.7.26 |
-| slf4j-log4j12 | 1.7.26 |
+| slf4j-api | 1.7.32 |
+| slf4j-log4j12 | 1.7.326 |
 
 
 * RUNTIME
@@ -79,13 +81,13 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 | Opensource | Version |
 |------------|---------|
 |   ojdbc5 | 11.1.0 |
-|   log4j | 1.2.14 |
+|   log4j | 1.2.17 |
 
 * TEST
 
 | Opensource | Version |
 |------------|---------|
-|  spring-test | 4.3.23.RELEASE |
+|  spring-test | 5.2.16.RELEASE |
 |  junit | 4.12 |
 |  hamcrest-core | 1.3 |
 
