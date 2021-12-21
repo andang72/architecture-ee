@@ -1,7 +1,5 @@
 # architecture-ee
 
-## 소개
-
 자바기반의 엔터프라이즈 어플리케이션 개발 아키텍처
 
 - 애플리케이션 관련 주요한 설정들을 XML과 데이터베이스를 사용하여 관리하는 지원.
@@ -13,19 +11,22 @@
 
 - 5.1.x 버전 부터는 Java 8+ 지원
 - 5.2.x 버전 부터는 Spring 5.2.x 지원
+- 5.3.x 버전 부터는 Spring 5.3.x 지원
 
-spring context 파일에 아래의 내용을 추가하여 기본 모듈들을 로드한다.
+spring context (WEB-INF/context-config/webApplicationContext.xml) 파일에 아래의 내용을 추가하여 기본 모듈을 로드한다.
 
 ```xml
 	
   <import resource="classpath:context/default-bootstrap-context.xml"/>	
-	<import resource="classpath:context/default-components-context.xml"/>
-	<import resource="classpath:context/default-transaction-context.xml"/>
-	<import resource="classpath:context/default-freemarker-context.xml"/>
-	<import resource="classpath:context/default-ehcache-context.xml"/>
+  <import resource="classpath:context/default-components-context.xml"/>
+  <import resource="classpath:context/default-transaction-context.xml"/>
+  <import resource="classpath:context/default-freemarker-context.xml"/>
+  <import resource="classpath:context/default-ehcache-context.xml"/>
  ``` 
    
 JTA transaction 을 사용하는 경우 default-transaction-context.xml 을 주석처리하고 JTA 설정을 추가한다.
+
+
 DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설정을 아래와 같이 설정한다.
 
 ```xml
@@ -60,7 +61,8 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 
 | Opensource | Version |
 |------------|---------|
-| spingframework | 5.2.16.RELEASE |
+| spingframework | 5.3.14 |
+| spring security | 5.6.1 |
 | commons-io | 2.11.0 |
 | commons-codec | 1.15 |
 | commons-dbcp2 | 1.4, 2.9.0 |
@@ -87,7 +89,7 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 
 | Opensource | Version |
 |------------|---------|
-|  spring-test | 5.2.16.RELEASE |
+|  spring-test | 5.3.14 |
 |  junit | 4.12 |
 |  hamcrest-core | 1.3 |
 
