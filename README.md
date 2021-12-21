@@ -69,13 +69,14 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 | commons-pool2 | 2.4.2 |
 | commons-io | 2.5 |
 | commons-logging | 1.2 |
-| freemarker | 2.3.28 |
-| dom4j | 2.1.2 |
+| freemarker | 2.3.31 |
+| dom4j | 2.1.3 |
 | xml-apis | 1.0.b2 |
-| guava | 27.1-jre |
+| guava | 31.0.1-jre |
 | ehcache | 3.7.0 |
 | slf4j-api | 1.7.32 |
 | slf4j-log4j12 | 1.7.32 |
+
 
 
 * RUNTIME
