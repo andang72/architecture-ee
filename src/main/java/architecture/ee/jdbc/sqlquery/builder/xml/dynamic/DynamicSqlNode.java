@@ -115,7 +115,6 @@ public class DynamicSqlNode implements SqlNode {
 				root.putAll(model); 
 				freemarker.template.Template template = new freemarker.template.Template("dynamic", reader, null);
 				template.setNumberFormat("computer");
-				//template.getConfiguration().setNumberFormat("");
 				template.process(root, writer);
 			} catch (IOException e) {
 				log.error("", e);

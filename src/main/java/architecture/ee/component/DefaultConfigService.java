@@ -55,7 +55,7 @@ public class DefaultConfigService implements ConfigService {
 	@Qualifier("sqlQueryFactory")
 	private SqlQueryFactory sqlQueryFactory ; 
 	
-	private Logger logger = LoggerFactory.getLogger(ConfigServiceImpl.class);
+	private Logger logger = LoggerFactory.getLogger(DefaultConfigService.class);
 
 	private State state = State.NONE;
 
@@ -84,6 +84,7 @@ public class DefaultConfigService implements ConfigService {
 	}
 	
 	public boolean isDatabaseInitialized() {
+		logger.info("State: {}", state.name());
 		boolean result = isSetDataSource();
 		if(result) {
 			String tables = repository.getSetupApplicationProperties().getOrDefault("services.config.tables", "AC_UI_PROPERTY"); 
@@ -104,8 +105,6 @@ public class DefaultConfigService implements ConfigService {
 		}
 		return result;
 	}
-	
-	
 	
 	public void initialize() {		
 		state = State.INITIALIZING;
@@ -166,6 +165,7 @@ public class DefaultConfigService implements ConfigService {
 						return null ;
 					}
 					
+					logger.debug("create new JdbcApplicationProperties. ");
 					JdbcApplicationProperties impl = new JdbcApplicationProperties(localized, isUsingExternalSql());
 					impl.setSqlConfiguration(sqlQueryFactory.getConfiguration());
 					impl.setApplicationEventPublisher(applicationEventPublisher);
