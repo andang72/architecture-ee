@@ -73,7 +73,7 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 | guava | 27.1-jre |
 | ehcache | 3.7.0 |
 | slf4j-api | 1.7.32 |
-| slf4j-log4j12 | 1.7.326 |
+| slf4j-log4j12 | 1.7.32 |
 
 
 * RUNTIME
@@ -81,7 +81,7 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 | Opensource | Version |
 |------------|---------|
 |   ojdbc5 | 11.1.0 |
-|   log4j | 1.2.17 |
+|   log4j | 2.17.0 |
 
 * TEST
 
