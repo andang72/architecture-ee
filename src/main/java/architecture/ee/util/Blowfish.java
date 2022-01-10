@@ -1497,7 +1497,7 @@ public class Blowfish {
         // hash down the password to a 160bit key
         MessageDigest digest = null;
         try {
-            digest = MessageDigest.getInstance("SHA1");
+            digest = MessageDigest.getInstance("SHA-256");
             digest.update(password.getBytes());
         }
         catch (Exception e) {

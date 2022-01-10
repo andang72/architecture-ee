@@ -94,44 +94,4 @@ public class SqlQueryBuilderAssistant extends AbstractBuilder {
 		}
 		statementBuilder.timeout(timeout);
 	}
-
-	/*
-	 * 
-	 * 
-	 * public MappedStatement addMappedStatement(String id, String description,
-	 * SqlSource sqlSource, StatementType statementType, Integer fetchSize,
-	 * Integer timeout) { String idToUse = applyCurrentNamespace(id);
-	 * MappedStatement.Builder statementBuilder = new
-	 * MappedStatement.Builder(configuration, idToUse, sqlSource,
-	 * statementType); statementBuilder.resource(resource);
-	 * statementBuilder.fetchSize(fetchSize);
-	 * statementBuilder.description(description); setStatementTimeout(timeout,
-	 * statementBuilder); MappedStatement statement = statementBuilder.build();
-	 * //configuration.addMappedStatement(statement); return statement; }
-	 * 
-	 * public MapperSource addMapperSource(String id, MapperSource mapperSource)
-	 * { String idToUse = applyCurrentNamespace(id);
-	 * mapperSource.setID(idToUse); configuration.addMapper(mapperSource);
-	 * return mapperSource; }
-	 * 
-	 * public String getCurrentNamespace() { return currentNamespace; }
-	 * 
-	 * public void setCurrentNamespace(String currentNamespace) { if
-	 * (currentNamespace != null) { this.currentNamespace = currentNamespace; if
-	 * (StringUtils.isNotEmpty(resource))
-	 * configuration.addUriNamespace(resource, currentNamespace); } if
-	 * (this.currentNamespace == null) { throw new BuilderException(
-	 * "The mapper element requires a namespace attribute to be specified."); }
-	 * }
-	 * 
-	 * public String applyCurrentNamespace(String base) { if (base == null)
-	 * return null; if (base.contains(".")) return base; return currentNamespace
-	 * + "." + base; }
-	 * 
-	 * private void setStatementTimeout(Integer timeout, MappedStatement.Builder
-	 * statementBuilder) { if (timeout == null) { timeout =
-	 * configuration.getDefaultStatementTimeout(); }
-	 * statementBuilder.timeout(timeout); }
-	 * 
-	 */
 }

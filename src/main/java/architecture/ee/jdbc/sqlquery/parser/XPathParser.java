@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -143,6 +144,7 @@ public class XPathParser {
 		// important: this must only be called AFTER common constructor
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			factory.setValidating(validation);
 			factory.setNamespaceAware(false);
 			factory.setIgnoringComments(true);
@@ -151,7 +153,6 @@ public class XPathParser {
 			factory.setExpandEntityReferences(true);
 
 			DocumentBuilder builder = factory.newDocumentBuilder();
-
 			builder.setEntityResolver(entityResolver);
 			builder.setErrorHandler(new ErrorHandler() {
 				public void error(SAXParseException exception) throws SAXException {
