@@ -285,6 +285,8 @@ public class ConfigurableJdbcApplicationProperties extends JdbcDaoSupport implem
 	private void insertProperty(String name, String value) {
 		if (getJdbcTemplate() != null) {
 			StringBuilder sql = new StringBuilder();
+			
+			
 			sql.append("INSERT INTO ");
 			if (localized) {
 				String baseKey = StringUtils.substringBeforeLast(name, ".");
