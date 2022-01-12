@@ -78,26 +78,29 @@
 		    <version>2.9.0</version>
 		</dependency>
 
+		<!-- Oracle JDBC Driver compatible with JDK8, JDK11, JDK12, JDK13, JDK14 and JDK15 -->
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc5</artifactId>
-			<version>11.1.0</version>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>21.4.0.0.1</version>
 			<scope>test</scope>
 		</dependency>
 
-		<!-- JDBC Driver for mysql -->
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-		<!-- 		<dependency>
+
+		<!-- Mysql JDBC Driver for -->
+		<!-- 		
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.44</version>
 		</dependency> 
 		-->
-		
+
 		<dependency>
 		  <groupId>mysql</groupId>
 		  <artifactId>mysql-connector-java</artifactId>
 		  <version>[8.0.16,)</version>
+		  <scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
@@ -298,6 +301,7 @@
 		</repository>
 	</repositories>
 
+	<!-- 
 	<distributionManagement>
 		<repository>
 			<id>podo-artifactory</id>
@@ -305,5 +309,14 @@
 			<url>http://www.podosw.com/artifactory/ext-release-local</url>
 		</repository>
 	</distributionManagement>
+	-->
+	
+	<distributionManagement>
+	   <repository>
+	     <id>github</id>
+	     <name>GitHub Architecture Community Studio</name>
+	     <url>https://maven.pkg.github.com/andang72/architecture-community-studio</url>
+	   </repository>
+	</distributionManagement>	
 
 </project>

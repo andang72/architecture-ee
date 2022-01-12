@@ -2,8 +2,8 @@
 
 자바기반의 엔터프라이즈 어플리케이션 개발 아키텍처
 
-- 애플리케이션 관련 주요한 설정들을 XML과 데이터베이스를 사용하여 관리하는 지원.
-- 데이터베이스 조작시 자바 코드와 쿼리 문을 XML 파일을 사용하여 분리하여 사용하는 것을 지원.
+- 주요한 설정들을 XML과 데이터베이스를 통하여 관리하는 기능 제공.
+- SQL 문을 XML 파일을 사용하여 관리하고 데이터베이스 조작 코드에서 불러와 사용하는 것을 지원.
 
 
 ------
@@ -23,10 +23,11 @@ spring context (WEB-INF/context-config/webApplicationContext.xml) 파일에 아�
   <import resource="classpath:context/default-freemarker-context.xml"/>
   <import resource="classpath:context/default-ehcache-context.xml"/>
  ``` 
-   
+
+* Using JTA Transaction    
 JTA transaction 을 사용하는 경우 default-transaction-context.xml 을 주석처리하고 JTA 설정을 추가한다.
 
-
+* DataSource Setting
 DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설정을 아래와 같이 설정한다.
 
 ```xml
@@ -55,11 +56,11 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
   
 ------
 
-## Opensource
+## Dependencies
 
 * COMPILE
 
-| Opensource | Version |
+| Name | Version |
 |------------|---------|
 | spingframework | 5.3.14 |
 | spring security | 5.6.1 |
@@ -76,23 +77,24 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 | ehcache | 3.7.0 |
 | slf4j-api | 1.7.32 |
 | slf4j-log4j12 | 1.7.32 |
-
+| sqlbuilder | 3.0.2 |
 
 
 * RUNTIME
 
-| Opensource | Version |
+| Name | Version |
 |------------|---------|
 |   ojdbc5 | 11.1.0 |
 |   log4j | 2.17.0 |
 
 * TEST
 
-| Opensource | Version |
+| Name | Version |
 |------------|---------|
 |  spring-test | 5.3.14 |
 |  junit | 4.12 |
 |  hamcrest-core | 1.3 |
+|  spotbugs | 4.5.0 |
 
 
 
