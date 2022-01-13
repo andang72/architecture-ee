@@ -25,7 +25,7 @@
 		<project.dependency.spring.version>5.3.14</project.dependency.spring.version>
 		<project.dependency.spring-security.version>5.6.1</project.dependency.spring-security.version>
 		<project.dependency.slf4j.version>1.7.32</project.dependency.slf4j.version>
-		<project.dependency.log4j.version>2.17.0</project.dependency.log4j.version>
+		<project.dependency.log4j.version>[2.17.1,)</project.dependency.log4j.version>
 		<!-- <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable> -->
 	</properties>
 
@@ -78,24 +78,29 @@
 		    <version>2.9.0</version>
 		</dependency>
 
+		<!-- Oracle JDBC Driver compatible with JDK8, JDK11, JDK12, JDK13, JDK14 and JDK15 -->
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc5</artifactId>
-			<version>11.1.0</version>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>21.4.0.0.1</version>
 			<scope>test</scope>
 		</dependency>
 
-		<!-- JDBC Driver for mysql -->
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-		<!-- 		<dependency>
+
+		<!-- Mysql JDBC Driver for -->
+		<!-- 		
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.44</version>
-		</dependency> -->
+		</dependency> 
+		-->
+
 		<dependency>
 		  <groupId>mysql</groupId>
 		  <artifactId>mysql-connector-java</artifactId>
 		  <version>[8.0.16,)</version>
+		  <scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
@@ -156,6 +161,14 @@
 			<version>${project.dependency.spring.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.healthmarketscience.sqlbuilder/sqlbuilder -->
+		<dependency>
+		    <groupId>com.healthmarketscience.sqlbuilder</groupId>
+		    <artifactId>sqlbuilder</artifactId>
+		    <version>3.0.2</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
@@ -248,6 +261,24 @@
 					<outputDirectory>${basedir}/WebContent/WEB-INF/lib</outputDirectory>
 				</configuration>
 			</plugin>
+			<!-- Integrate Find Security Bugs into spotbugs-maven-plugin -->
+			<plugin>
+	            <groupId>com.github.spotbugs</groupId>
+	            <artifactId>spotbugs-maven-plugin</artifactId>
+	            <version>4.5.0.0</version>
+	            <configuration>
+	                <includeFilterFile>spotbugs-security-include.xml</includeFilterFile>
+	                <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
+	                <plugins>
+	                    <plugin>
+	                        <groupId>com.h3xstream.findsecbugs</groupId>
+	                        <artifactId>findsecbugs-plugin</artifactId>
+	                        <version>1.10.1</version>
+	                    </plugin>
+	                </plugins>
+	            </configuration>
+        	</plugin> 
+        	<!-- ./Integrate Find Security Bugs into spotbugs-maven-plugin -->
 		</plugins>
 	</build>
 
@@ -270,6 +301,7 @@
 		</repository>
 	</repositories>
 
+	<!-- 
 	<distributionManagement>
 		<repository>
 			<id>podo-artifactory</id>
@@ -277,5 +309,14 @@
 			<url>http://www.podosw.com/artifactory/ext-release-local</url>
 		</repository>
 	</distributionManagement>
+	-->
+	
+	<distributionManagement>
+	   <repository>
+	     <id>github</id>
+	     <name>GitHub Architecture Community Studio</name>
+	     <url>https://maven.pkg.github.com/andang72/architecture-community-studio</url>
+	   </repository>
+	</distributionManagement>	
 
 </project>
