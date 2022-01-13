@@ -1,0 +1,4 @@
+/target/
+/.apt_generated/
+.DS_Store
+.github
