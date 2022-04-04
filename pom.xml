@@ -22,8 +22,8 @@
 		<javac.target.version>1.8</javac.target.version>
 		<project.javadoc.docEncoding>UTF-8</project.javadoc.docEncoding>
 		<project.build.version>5.3.1</project.build.version>
-		<project.dependency.spring.version>5.3.14</project.dependency.spring.version>
-		<project.dependency.spring-security.version>5.6.1</project.dependency.spring-security.version>
+		<project.dependency.spring.version>5.3.18</project.dependency.spring.version>
+		<project.dependency.spring-security.version>5.6.2</project.dependency.spring-security.version>
 		<project.dependency.slf4j.version>1.7.32</project.dependency.slf4j.version>
 		<project.dependency.log4j.version>[2.17.1,)</project.dependency.log4j.version>
 		<!-- <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable> -->
@@ -47,8 +47,7 @@
 			<version>${project.dependency.spring.version}</version>
 		</dependency>
 
-		<!-- APACHE COMMONS -->
-		
+		<!-- APACHE COMMONS --> 
 		<dependency>
 		    <groupId>commons-io</groupId>
 		    <artifactId>commons-io</artifactId>

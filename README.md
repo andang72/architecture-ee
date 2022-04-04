@@ -62,8 +62,8 @@ DataSource 설정을 위하여 WEB-INF/startup-config.xml 파일에 database 설
 
 | Name | Version |
 |------------|---------|
-| spingframework | 5.3.14 |
-| spring security | 5.6.1 |
+| spingframework | 5.3.18 |
+| spring security | 5.6.2 |
 | commons-io | 2.11.0 |
 | commons-codec | 1.15 |
 | commons-dbcp2 | 1.4, 2.9.0 |
