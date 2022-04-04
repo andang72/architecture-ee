@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>architecture</groupId>
 	<artifactId>architecture-ee</artifactId>
-	<version>5.3.1</version>
+	<version>5.3.2</version>
 	<inceptionYear>2010</inceptionYear>
 	<name>architecture-ee</name>
 	<description>자바기반의 엔터프라이즈 어플리케이션 개발 아키텍처</description>
