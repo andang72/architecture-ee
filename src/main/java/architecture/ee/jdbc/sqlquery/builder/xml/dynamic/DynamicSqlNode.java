@@ -83,7 +83,7 @@ public class DynamicSqlNode implements SqlNode {
 		Object additionalParameterObject = context.getBindings().get(DynamicContext.ADDITIONAL_PARAMETER_OBJECT_KEY);
 		if (additionalParameterObject != null) {
 			if (additionalParameterObject instanceof Map)
-				map.putAll((Map) additionalParameterObject);
+				map.putAll((Map)additionalParameterObject);
 			else
 				map.put("additional_parameters", additionalParameterObject);
 		}

@@ -12,6 +12,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
@@ -84,7 +85,7 @@ public abstract class AbstractXmlEditor {
 		File tempFile = null;
 		Writer writer = null;
 		try {
-			tempFile = new File(file.getParentFile(), file.getName() + ".tmp");
+			tempFile = new File(file.getParentFile(), FilenameUtils.getName(file.getName()) + ".tmp");
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile), "UTF-8"));
 			OutputFormat prettyPrinter = OutputFormat.createPrettyPrint();
 			XmlWriter xmlWriter = new XmlWriter(writer, prettyPrinter);

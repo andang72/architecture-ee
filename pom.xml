@@ -262,21 +262,21 @@
 			</plugin>
 			<!-- Integrate Find Security Bugs into spotbugs-maven-plugin -->
 			<plugin>
-	            <groupId>com.github.spotbugs</groupId>
-	            <artifactId>spotbugs-maven-plugin</artifactId>
-	            <version>4.5.0.0</version>
-	            <configuration>
-	                <includeFilterFile>spotbugs-security-include.xml</includeFilterFile>
-	                <excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
-	                <plugins>
-	                    <plugin>
-	                        <groupId>com.h3xstream.findsecbugs</groupId>
-	                        <artifactId>findsecbugs-plugin</artifactId>
-	                        <version>1.10.1</version>
-	                    </plugin>
-	                </plugins>
-	            </configuration>
-        	</plugin> 
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.7.0.0</version>
+				<configuration>
+					<includeFilterFile>spotbugs-security-include.xml</includeFilterFile>
+					<excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
+					<plugins>
+						<plugin>
+							<groupId>com.h3xstream.findsecbugs</groupId>
+							<artifactId>findsecbugs-plugin</artifactId>
+							<version>1.12.0</version>
+						</plugin>
+					</plugins>
+				</configuration>
+			</plugin>
         	<!-- ./Integrate Find Security Bugs into spotbugs-maven-plugin -->
 		</plugins>
 	</build>

@@ -72,16 +72,15 @@ public class ExtendedJdbcUtils extends JdbcUtils {
 			while (tables.next()) { 
 			
 				String currentTableName = tables.getString("TABLE_NAME");
-				
-				logger.debug("extracting tablename : {}", currentTableName );
-				
+				if(logger.isDebugEnabled()){
+					logger.debug("extracting tablename : {}", currentTableName.replaceAll("[\r\n]", "") );
+				} 
 				if (currentTableName.equals(tableName)) {
 					result = true;
 				}
 				
 			}
-			tables.close();
-			
+			tables.close(); 
 			ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null); 
 			if (rs.next()) {
 			      System.out.println("Table exists"); 

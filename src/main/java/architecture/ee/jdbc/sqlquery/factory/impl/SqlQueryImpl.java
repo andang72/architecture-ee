@@ -68,30 +68,30 @@ public class SqlQueryImpl extends ExtendedJdbcDaoSupport implements SqlQuery {
 	
 	public BoundSql getBoundSql(String statement) {		
 		BoundSql sql;		
-		if( additionalParameters.size() > 0)		
+		if(additionalParameters.size() > 0){		
 			sql = super.getBoundSqlWithAdditionalParameter(statement, additionalParameters);
-		else 
+		}else {
 			sql = super.getBoundSql(statement);	
-		
+		}
 		additionalParameters.clear();
 		return sql;
 	}
 	
 	public Map<String, Object> queryForObject(String statemenKey, Object... params){
 		BoundSql boundSql = getBoundSql(statemenKey);	
-		return getExtendedJdbcTemplate().queryForMap(boundSql.getSql(), params );
+		return getExtendedJdbcTemplate().queryForMap(getBoundSqlText(boundSql), params );
 	}
 	
 	public <T> T queryForObject(String statemenKey, Class<T> elementType, Object... params){		
 		BoundSql boundSql = getBoundSql(statemenKey);	
-		return getExtendedJdbcTemplate().queryForObject(boundSql.getSql(), elementType, params);
+		return getExtendedJdbcTemplate().queryForObject(getBoundSqlText(boundSql), elementType, params);
 	}
  
 	
 	@Override
 	public List<Map<String, Object>> queryForList(String statemenKey) {
 		BoundSql boundSql = getBoundSql(statemenKey);
-		return getExtendedJdbcTemplate().queryForList(boundSql.getSql());
+		return getExtendedJdbcTemplate().queryForList(getBoundSqlText(boundSql));
 	}
 
 	@Override
@@ -99,30 +99,30 @@ public class SqlQueryImpl extends ExtendedJdbcDaoSupport implements SqlQuery {
 		Preconditions.checkArgument(startIndex >= 0, "startIndex is %s but it must be greater then or equal to zero.", startIndex);
 		Preconditions.checkArgument(maxResults > 0, "maxResults is %s but it must be greater then zero.", maxResults);		
 		BoundSql boundSql = getBoundSql(statemenKey);
-		return getExtendedJdbcTemplate().query(boundSql.getSql(), startIndex, maxResults);
+		return getExtendedJdbcTemplate().query(getBoundSqlText(boundSql), startIndex, maxResults);
 	}
 		
 	public List<Map<String, Object>> queryForList(String statemenKey, Object... params) {
 		BoundSql boundSql = getBoundSql(statemenKey);			
-		return getExtendedJdbcTemplate().queryForList(boundSql.getSql(), params);	
+		return getExtendedJdbcTemplate().queryForList(getBoundSqlText(boundSql), params);	
 	}
 	
 	public List<Map<String, Object>> queryForList(String statemenKey, int startIndex, int maxResults, Object... params) {
 		Preconditions.checkArgument(startIndex >= 0, "startIndex is %s but it must be greater then or equal to zero.", startIndex);
 		Preconditions.checkArgument(maxResults > 0, "maxResults is %s but it must be greater then zero.", maxResults);
 		BoundSql boundSql = getBoundSql(statemenKey);
-		return getExtendedJdbcTemplate().query(boundSql.getSql(), startIndex, maxResults ,params);
+		return getExtendedJdbcTemplate().query(getBoundSqlText(boundSql), startIndex, maxResults ,params);
 	}
 	
 	
 	public <T> List<T> queryForList(String statemenKey, Class<T> elementType) {
 		BoundSql boundSql = getBoundSql(statemenKey);	
-		return getExtendedJdbcTemplate().queryForList(boundSql.getSql(), elementType);
+		return getExtendedJdbcTemplate().queryForList(getBoundSqlText(boundSql), elementType);
 	}
 	
 	public <T> List<T> queryForList(String statemenKey, Class<T> elementType, Object... params) {
 		BoundSql boundSql = getBoundSql(statemenKey);			
-		return getExtendedJdbcTemplate().queryForList(boundSql.getSql(), elementType, params);	
+		return getExtendedJdbcTemplate().queryForList(getBoundSqlText(boundSql), elementType, params);	
 	}
 	
 	@Override
@@ -130,32 +130,32 @@ public class SqlQueryImpl extends ExtendedJdbcDaoSupport implements SqlQuery {
 		Preconditions.checkArgument(startIndex >= 0, "startIndex is %s but it must be greater then or equal to zero.", startIndex);
 		Preconditions.checkArgument(maxResults > 0, "maxResults is %s but it must be greater then zero.", maxResults);
 		BoundSql boundSql = getBoundSql(statemenKey);	
-		return getExtendedJdbcTemplate().query(boundSql.getSql(), startIndex, maxResults, elementType);
+		return getExtendedJdbcTemplate().query(getBoundSqlText(boundSql), startIndex, maxResults, elementType);
 	}
 	
 	public <T> List<T> queryForList(String statemenKey, int startIndex, int maxResults, Class<T> elementType, Object... params) {
 		Preconditions.checkArgument(startIndex >= 0, "startIndex is %s but it must be greater then or equal to zero.", startIndex);
 		Preconditions.checkArgument(maxResults > 0, "maxResults is %s but it must be greater then zero.", maxResults);
 		BoundSql boundSql = getBoundSql(statemenKey);
-		return getExtendedJdbcTemplate().query(boundSql.getSql(), startIndex, maxResults ,elementType, params);
+		return getExtendedJdbcTemplate().query(getBoundSqlText(boundSql), startIndex, maxResults ,elementType, params);
 	}
 
 	@Override
 	public int executeUpdate(String statemenKey) {
 		BoundSql boundSql = getBoundSql(statemenKey);
-		return getExtendedJdbcTemplate().update(boundSql.getSql());
+		return getExtendedJdbcTemplate().update(getBoundSqlText(boundSql));
 	}
 
 	@Override
 	public int executeUpdate(String statemenKey, Object... parameters) {
 		BoundSql boundSql = getBoundSql(statemenKey);
-		return getExtendedJdbcTemplate().update(boundSql.getSql(), parameters);
+		return getExtendedJdbcTemplate().update(getBoundSqlText(boundSql), parameters);
 	}
 
 	@Override
 	public Object executeScript(String statemenKey, boolean stopOnError) {
 		BoundSql boundSql = getBoundSql(statemenKey);
-		return getExtendedJdbcTemplate().executeScript(stopOnError, new StringReader(boundSql.getSql()));
+		return getExtendedJdbcTemplate().executeScript(stopOnError, new StringReader(getBoundSqlText(boundSql)));
 	}
 
 	@Override
@@ -179,9 +179,15 @@ public class SqlQueryImpl extends ExtendedJdbcDaoSupport implements SqlQuery {
 				declaredParameters.add(output);
 			}			
 		}		
-		CallableStatementCreatorFactory callableStatementFactory = new CallableStatementCreatorFactory(boundSql.getSql(), declaredParameters);		
+		CallableStatementCreatorFactory callableStatementFactory = new CallableStatementCreatorFactory(getBoundSqlText(boundSql), declaredParameters);		
 		return getExtendedJdbcTemplate().call(callableStatementFactory.newCallableStatementCreator(paramsToUse), declaredParameters );
-	
+	}
+
+	private String getBoundSqlText(BoundSql boundSql) { 
+        if( boundSql != null ){
+            return boundSql.getSql().replaceAll("[<>,*^&%$#@/\\\\+-()]","");
+        }
+        return null;  
 	}
 
 }

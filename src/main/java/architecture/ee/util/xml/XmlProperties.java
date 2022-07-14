@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.io.FilenameUtils;
 import org.dom4j.CDATA;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -65,6 +66,7 @@ import com.google.common.xml.XmlEscapers;
  *
  * @author Derek DeMoro
  * @author Iain Shigeoka
+ * @author Andang Son
  */
 public class XmlProperties {
 
@@ -156,7 +158,7 @@ public class XmlProperties {
 			// tmp file failed the last time Jive was running,
 			// but that it exists now.
 			File tempFile;
-			tempFile = new File(file.getParentFile(), file.getName() + ".tmp");
+			tempFile = new File(file.getParentFile(), FilenameUtils.getName( file.getName() )+ ".tmp");
 			if (tempFile.exists()) {
 				// log.error(L10NUtils.format("002157", file.getName()));
 				tempFile.renameTo(file);
@@ -214,14 +216,12 @@ public class XmlProperties {
 	/**
 	 * Creates a new XMLPropertiesTest object.
 	 *
-	 * @param fileName
-	 *            the full path the file that properties should be read from and
-	 *            written to.
+	 * @param fileName the full path the file that properties should be read from and written to.
 	 * @throws IOException
 	 *             if an error occurs loading the properties.
 	 */
 	public XmlProperties(String fileName) throws IOException {
-		this(new File(fileName));
+		this(new File(FilenameUtils.getFullPath(fileName)));
 	}
 
 	/**
@@ -551,7 +551,7 @@ public class XmlProperties {
 		File tempFile = null;
 		Writer writer = null;
 		try {
-			tempFile = new File(file.getParentFile(), file.getName() + ".tmp");
+			tempFile = new File(file.getParentFile(), FilenameUtils.getName(file.getName()) + ".tmp");
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile), "UTF-8"));
 			OutputFormat prettyPrinter = OutputFormat.createPrettyPrint();
 			XmlWriter xmlWriter = new XmlWriter(writer, prettyPrinter);

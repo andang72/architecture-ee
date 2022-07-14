@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.Resource;
 
 import architecture.ee.service.ConfigRoot;
@@ -33,9 +34,7 @@ public class ConfigRootImpl implements ConfigRoot {
 
 	public File getFile(String name) {
 		try {
-			//return getRootResource().createRelative(name).getFile();
-			
-			File file = new File( getRootResource().getFile() , name );
+			File file = new File( getRootResource().getFile() , FilenameUtils.getName(name) );
 			return file;
 		} catch (IOException e) {
 		}

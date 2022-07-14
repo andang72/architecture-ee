@@ -139,25 +139,22 @@ public class JdbcSequencer implements Sequencer {
         if (count == 0) {
             logger.error(CommonLogLocalizer.getMessage("003102"));
             return;
-        }
-
+        } 
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         boolean success = false;
+        
         try {
-        	long currentID = 1;
-            
+        	long currentID = 1; 
         	con = DataSourceUtils.getConnection(getDataSource());
             if( type == 0 )
             {
-            	pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_NAME").getSql());
+                pstmt = con.prepareStatement(getBoundSqlText("FRAMEWORK_EE.SELECT_SEQUENCER_BY_NAME"));
             	DataSourceUtils.applyTransactionTimeout(pstmt, getDataSource());
             	pstmt.setString(1, name);
             	rs = pstmt.executeQuery();
-            	
             	//logger.debug(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_NAME").getSql());
-            	
             	if( rs.next() ){
             		this.type = rs.getInt(1);
             		currentID = rs.getLong(3);
@@ -166,17 +163,13 @@ public class JdbcSequencer implements Sequencer {
             	}
                 JdbcUtils.closeResultSet(rs);
                 JdbcUtils.closeStatement(pstmt);
-                
             }else{
                 // Get the current ID from the database.
-                pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_ID").getSql());
+                pstmt = con.prepareStatement(getBoundSqlText("FRAMEWORK_EE.SELECT_SEQUENCER_BY_ID"));
     	        DataSourceUtils.applyTransactionTimeout(pstmt, getDataSource());         
     	        pstmt.setInt(1, type);
-    	        
     	        rs = pstmt.executeQuery();
-                
-    	        //logger.debug(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_NAME").getSql());
-    	        
+                //logger.debug(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_BY_NAME").getSql());
     	        if (rs.next()) {
                     currentID = rs.getLong(1);
                 }
@@ -192,7 +185,8 @@ public class JdbcSequencer implements Sequencer {
             // The WHERE clause includes the last value of the id. This ensures
             // that an update will occur only if nobody else has performed an
             // update first.
-            pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.UPDATE_SEQUENCER").getSql());
+
+            pstmt = con.prepareStatement(getBoundSqlText("FRAMEWORK_EE.UPDATE_SEQUENCER"));
             pstmt.setLong(1, newID);
             pstmt.setInt(2, type);
             pstmt.setLong(3, currentID);
@@ -235,13 +229,14 @@ public class JdbcSequencer implements Sequencer {
     }
 
     private void createNewID(Connection con, int type) throws SQLException {
-    	
-        logger.warn(CommonLogLocalizer.format("003105", type, name)); 
+    	if( logger.isWarnEnabled() ){
+            logger.warn(CommonLogLocalizer.format("003105", type, name)); 
+        } 
         // create new ID row
         PreparedStatement pstmt = null;
         try {
         	if(type == 0 && !StringUtils.isNullOrEmpty(name)){
-        		pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.SELECT_SEQUENCER_MAX_ID").getSql());   
+        		pstmt = con.prepareStatement(getBoundSqlText("FRAMEWORK_EE.SELECT_SEQUENCER_MAX_ID"));   
         		ResultSet rs = pstmt.executeQuery();
         		if( rs.next() ){
         			this.type = rs.getInt(1);
@@ -252,7 +247,7 @@ public class JdbcSequencer implements Sequencer {
                 JdbcUtils.closeStatement(pstmt);
         	}        	
         	
-            pstmt = con.prepareStatement(getBoundSql("FRAMEWORK_EE.CREATE_SEQUENCER").getSql());
+            pstmt = con.prepareStatement(getBoundSqlText("FRAMEWORK_EE.CREATE_SEQUENCER"));
             pstmt.setInt(1, this.type);
 			pstmt.setLong(1, 1L);
 			pstmt.setString(2, this.name);
@@ -265,11 +260,19 @@ public class JdbcSequencer implements Sequencer {
         }
     }
     
-	private BoundSql getBoundSql(String statement) {
+    private String getBoundSqlText(String statement){ 
+        BoundSql sql = getBoundSql(statement); 
+        if( sql != null ){
+           return sql.getSql();
+        }
+        return null ;
+    }
+
+	private BoundSql getBoundSql(String statement){ 
 		if ( this.sqlConfiguration != null ) {
 			MappedStatement stmt = sqlConfiguration.getMappedStatement(statement);
 			return stmt.getBoundSql(null);
-		}
-		return null;
+		} 
+        return null;
 	}
 }

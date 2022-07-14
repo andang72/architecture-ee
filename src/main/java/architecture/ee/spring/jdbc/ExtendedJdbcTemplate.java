@@ -248,6 +248,7 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 
 	// *********************************************
     // Public Methods for Script
+	// -- Potential JDBC Injection 
     // *********************************************
 
 	public Object executeScript(final boolean stopOnError, final Reader reader) {
@@ -263,7 +264,7 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 		});
 	}
 	
-	protected Object runScript(Connection conn, boolean stopOnError, Reader reader) throws SQLException, IOException {
+	private Object runScript(Connection conn, boolean stopOnError, Reader reader) throws SQLException, IOException {
 
 		StringBuffer command = null;
 		List<Object> list = new ArrayList<Object>();
@@ -277,7 +278,7 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 				String trimmedLine = line.trim();
 				if (trimmedLine.startsWith("--")) {
 					if (logger.isDebugEnabled())
-						logger.debug(trimmedLine);
+						logger.debug(trimmedLine.replaceAll("[\r\n]", ""));
 				} else if (trimmedLine.length() < 1
 						|| trimmedLine.startsWith("//")) {
 					// Do nothing
@@ -285,12 +286,11 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 						|| trimmedLine.startsWith("--")) {
 					// Do nothing
 				} else if (trimmedLine.endsWith(";")) {
-					command.append(line.substring(0, line.lastIndexOf(";")));
-					command.append(" ");
-
+					command.append( line.substring(0, line.lastIndexOf(";") ).replaceAll("[\r\n]", "") );
+					command.append(" "); 
 					Statement statement = conn.createStatement();
 					if (logger.isDebugEnabled()) {
-						logger.debug("Executing SQL script command [" + command + "]");
+						logger.debug("Executing SQL script command [" + command.toString().replaceAll("[\r\n]", "") + "]");
 					}
 
 					boolean hasResults = false;
@@ -301,7 +301,7 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 							statement.execute(command.toString());
 						} catch (SQLException e) {
 							if (logger.isDebugEnabled())
-								logger.error("Error executing: " + command, e);
+								logger.error("Error executing: " + command.toString().replaceAll("[\r\n]", "") , e);
 							throw e;
 						}
 					}
@@ -320,10 +320,10 @@ public class ExtendedJdbcTemplate extends JdbcTemplate {
 
 			return list;
 		} catch (SQLException e) {
-			logger.error("Error executing: " + command, e);
+			logger.error("Error executing: " + command.toString().replaceAll("[\r\n]", ""), e);
 			throw e;
 		} catch (IOException e) {
-			logger.error("Error executing: " + command, e);
+			logger.error("Error executing: " + command.toString().replaceAll("[\r\n]", ""), e);
 			throw e;
 		}
 	}
