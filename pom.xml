@@ -314,7 +314,7 @@
 	   <repository>
 	     <id>github</id>
 	     <name>GitHub Architecture Community Studio</name>
-	     <url>https://maven.pkg.github.com/andang72/architecture-community-studio</url>
+	     <url>https://maven.pkg.github.com/andang72/architecture-ee</url>
 	   </repository>
 	</distributionManagement>	
 

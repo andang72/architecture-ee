@@ -1,4 +1,6 @@
 /target/
 /.apt_generated/
+/WebContent/WEB-INF/lib/
+/WebContent/WEB-INF/startup-config.xml
 .DS_Store
 .github
