@@ -1,4 +1,4 @@
-# [![Java CI with Maven](https://github.com/andang72/architecture-ee/actions/workflows/maven.yml/badge.svg)](https://github.com/andang72/architecture-ee/actions/workflows/maven.yml) architecture-ee
+# [![Java CI with Maven](https://github.com/andang72/architecture-ee/actions/workflows/maven.yml/badge.svg)](https://github.com/andang72/architecture-ee/actions/workflows/maven.yml) architecture-ee ![version](https://img.shields.io/badge/version-5.3.2-blue.svg)
 
 자바기반의 엔터프라이즈 어플리케이션 개발 아키텍처
 
